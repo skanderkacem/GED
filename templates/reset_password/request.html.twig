@@ -1,0 +1,46 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>reset request</title>
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{{asset('assets/img/svg/logo.svg')}}" type="image/x-icon">
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="{{asset('assets/css/bootstrap.css')}}">
+  <link rel="stylesheet" href="{{asset('assets/css/style.min.css')}}">
+
+
+</head>
+
+<body>
+  <div class="layer"></div>
+<main class="page-center">
+  <article class="sign-up">
+
+  {% for flash_error in app.flashes('reset_password_error') %}
+<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+{% endfor %}
+<h1 class='sign-up__title'>Reset your password request</h1>
+
+{{ form_start(requestForm,{'attr':{'class':'sign-up-form form'}}) }}
+{{ form_row(requestForm.email,{'attr':{'class':'form-control form-input','placeholder':'enter your email','autofocus':'true'}}) }}
+<div>
+    <small>
+        Enter your email address and we will send you a
+        link to reset your password.
+    </small>
+</div>
+
+<button class="btn btn-primary mt-3">Send password reset email</button>
+{{ form_end(requestForm) }}
+  </article>
+</main>
+
+</body>
+
+</html>

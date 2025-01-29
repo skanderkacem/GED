@@ -1,0 +1,25 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+
+    {{ form_start(form,{'attr':{'class':'Add','action':"{{path('addDoc',{'folder':id)}}"}},) }}
+        {{ form_row(form.name,{'attr':{'class':'border AddDocName mt-2'}}) }}
+      
+        {{ form_row(form.file,{'attr':{'class':'border AddDocFile mt-2' ,'onchange' : 'setName();'}}) }}
+
+                {{ form_row(form.submitadd,{'attr':{'class':'btn btn-primary mt-3 p-2 col-12','type':'submit'}}) }}
+        
+    {{ form_end(form) }}
+
+
+    <script>
+    function setName(){
+        input=document.getElementsByClassName('AddDocName')[0];
+        fileName=document.getElementsByClassName('AddDocFile')[0].files[0].name;
+        if (input.value=='')
+        {
+            input.value=fileName.substr(0,fileName.lastIndexOf('.'))
+        }
+      
+    };
+    
+    </script>

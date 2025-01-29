@@ -1,0 +1,112 @@
+{% extends "home/template.html.twig" %}
+
+{% block title %}
+	Folder | List
+{% endblock %}
+
+
+{% block body %}
+
+<style>
+
+  #files-area{
+    width: 30%;
+    margin: 0 auto;
+  }
+  .file-block{
+    border-radius: 10px;
+    background-color: rgba(144, 163, 203, 0.2);
+    margin: 5px;
+    color: initial;
+    display: inline-flex;
+    & > span.name{
+      padding-right: 10px;
+      width: max-content;
+      display: inline-flex;
+    }
+  }
+  .file-delete{
+    display: flex;
+    width: 24px;
+    color: initial;
+    background-color: #6eb4ff00;
+    font-size: large;
+    justify-content: center;
+    margin-right: 3px;
+    cursor: pointer;
+    &:hover{
+      background-color: rgba(144, 163, 203, 0.2);
+      border-radius: 10px;
+    }
+    & > span{
+      transform: rotate(45deg);
+    }
+  }
+  
+</style>
+        <h1>Select files to add to document</h1>
+    {% form_theme form 'bootstrap_5_layout.html.twig' %}
+        {{ form_start(form) }}
+        {{ form_row(form.files,{'attr':{'class':'border mt-2  mx-2'}}) }}
+<button type="submit">ddddddddddd</button>
+        <div id="files-area">
+        <span id="filesList">
+          <span id="files-names"></span>
+        </span>
+      </div>
+        {{ form_end(form) }}
+       
+
+   
+      
+
+{% endblock %}
+
+
+
+{% block javascript %}
+  <script>
+    const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
+
+    $("#form_files").on('change', function(e){
+      for(var i = 0; i < this.files.length; i++){
+
+      '<div class=\"img-wrap img-wrapper\">' +
+		'<i class="fa-regular fa-file"></i>' + "<span class=\"close\"><i class=\"fa-regular fa-trash-can\" style=\"color: #e2182c;\"></i></span></div>"
+	
+
+
+
+        let fileBloc = $('<li/>', {class: 'file-block'}),
+           fileName = $('<span/>', {class: 'name', text: this.files.item(i).name});
+        fileBloc.append('<span class="file-delete"><i class=\"fa-regular fa-trash-can\" style=\"color: #e2182c;\"></i> </span>')
+          .append(fileName);
+        $("#imgList").append(fileBloc);
+      };
+      // Ajout des fichiers dans l'objet DataTransfer
+      for (let file of this.files) {
+        dt.items.add(file);
+      }
+      // Mise à jour des fichiers de l'input file après ajout
+      this.files = dt.files;
+    
+      // EventListener pour le bouton de suppression créé
+      $('span.file-delete').click(function(){
+        let name = $(this).next('span.name').text();
+        // Supprimer l'affichage du nom de fichier
+        $(this).parent().remove();
+        for(let i = 0; i < dt.items.length; i++){
+          // Correspondance du fichier et du nom
+          if(name === dt.items[i].getAsFile().name){
+            // Suppression du fichier dans l'objet DataTransfer
+            dt.items.remove(i);
+            continue;
+          }
+        }
+        // Mise à jour des fichiers de l'input file après suppression
+        document.getElementById('attachment').files = dt.files;
+      });
+    });
+  
+  </script>
+{% endblock %}

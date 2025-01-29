@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GED | LOGIN</title>
+  <!-- Favicon -->
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="{{asset('assets/css/bootstrap.css')}}">
+  <link rel="stylesheet" href="{{asset('assets/css/style.min.css')}}">
+
+
+</head>
+
+<body>
+<main class="page-center">
+  <article class="sign-up">
+
+  {% block body %}
+    <h1 class="sign-up__title">Welcome To GED!</h1>
+    <p class="sign-up__subtitle">Sign in to your account to continue</p>
+
+
+  
+
+    <form class="sign-up-form form"  method="post">
+    {% if error %}
+<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+{% endif %}
+
+{% if app.user %}
+<div class="mb-3">
+    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+</div>
+{% endif %}
+
+
+      <label class="form-label-wrapper" for="inputEmail">
+        <p class="form-label">Email</p>
+        <input class="form-control form-input" type="email" placeholder="Enter your email" value="{{ last_username }}" name="email" id="inputEmail"  autocomplete="email" required autofocus>
+      </label>
+
+      <label class="form-label-wrapper" for="inputPassword">
+        <p class="form-label">Password</p>
+        <input class="form-control form-input" type="password"name="password" id="inputPassword" placeholder="Enter your password" autocomplete="current-password" required>
+      </label>
+      <a class="link-info forget-link" href="{{path('app_forgot_password_request') }}">Forgot your password?</a>
+      <input type="hidden" name="_csrf_token"
+           value="{{ csrf_token('authenticate') }}">
+
+           <div class="checkbox mb-3">
+           <label>
+               <input type="checkbox" name="_remember_me"> Remember me
+           </label>
+       </div>
+
+
+      <button class="form-btn primary-default-btn transparent-btn" type="submit">Sign in</button>
+    </form>
+    {% endblock  %}
+  </article>
+</main>
+
+</body>
+
+</html>

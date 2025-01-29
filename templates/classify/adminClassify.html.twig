@@ -1,0 +1,248 @@
+
+{% extends "home/template.html.twig" %}
+
+{% block title %}
+	Docs | classify
+{% endblock %}
+
+{% block sd %}
+
+<div class="sidebar-body">
+<ul class="sidebar-body-menu">
+  <li>
+	<a class="" href="{{ path('app.home') }}">
+	  <span class="icon home" aria-hidden="true"></span>
+	  Dashboard
+	</a>
+  </li>
+  <li>
+	<a class="show-cat-btn " href="##">
+	  <span class="icon folder" aria-hidden="true"></span>
+	  Folders
+											  
+	  <span class="category__btn transparent-btn" title="Open list">
+		<span class="sr-only">
+		  Open list
+		</span>
+		<span class="icon arrow-down" aria-hidden="true"></span>
+	  </span>
+	</a>
+	<ul class="cat-sub-menu">
+	  <li>
+		<a href="{{ path('folder.treeView') }}">
+		  <i class="fa fa-folder-open me-3" aria-hidden="true"></i>
+		  Folders
+		</a>
+		<a href="{{ path('trash.list') }}">
+		  <i class="fa fa-trash me-3" aria-hidden="true"></i>
+		  My trash
+		</a>
+	  </li>
+	</ul>
+  </li>
+  <li>
+	{% if is_granted('ROLE_upload') or is_granted('ROLE_classify') %}
+
+	  <a class="show-cat-btn  active" href="##">
+		<span class="icon " aria-hidden="true"> <i class="fa-solid fa-inbox" style="font-size: x-large;"></i></span>
+		Classify                    										
+		<span class="category__btn transparent-btn" title="Open list">
+		  <span class="sr-only">
+			Open list
+		  </span>
+		  <span class="icon arrow-down" aria-hidden="true"></span>
+		</span>
+	  </a>
+	  <ul class="cat-sub-menu">
+		<li>
+		{% if is_granted('ROLE_classify') %}
+		  <a href="{{ path('app_classify') }}">
+			<i class="fa-solid fa-box-open me-1" aria-hidden="true"></i>
+			CLassify Docs
+		  </a>
+		{% endif %}
+		{% if is_granted('ROLE_upload') %}
+		  <a href="{{ path('app_upload') }}">
+		  <i class="fa-solid fa-cloud-arrow-up me-1"aria-hidden="true"></i>
+		   Upload Docs
+		  </a>
+		{% endif %}
+		</li>
+	  </ul>
+	{% endif %}
+	</li>
+
+
+	<li>
+	{% if is_granted('ROLE_manage_users') or is_granted('ROLE_create_groups') %}
+	  <a class="show-cat-btn" href="##">
+		<span class="icon setting" aria-hidden="true"></span>
+		Settings
+												
+		<span class="category__btn transparent-btn" title="Open list">
+		  <span class="sr-only">
+			Open list
+		  </span>
+		  <span class="icon arrow-down" aria-hidden="true"></span>
+		</span>
+	  </a>
+	  <ul class="cat-sub-menu">
+		<li>
+		  {% if is_granted('ROLE_manage_users') %}
+			<a href="{{ path('app_usersList') }}">
+			  <i class="fa-solid fa-user me-4" aria-hidden="true"></i>
+			  </i> Users
+			 </a>
+		  {% endif %}
+		  {% if is_granted('ROLE_manage_groups') %}
+			<a href="{{ path('app_groupList') }}">
+			  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+			  All groups
+			</a>
+		  {% endif %}
+		  {% if is_granted('ROLE_create_groups') %}
+			<a href="{{ path('app_groupMyList') }}">
+			  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+			  My groups
+			</a>
+		  {% endif %}
+		 </li>
+		</ul>
+	{% endif %}
+	</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+{% endblock %}
+{% block body %}
+{% if form.docs.vars.choices | length == 0 %} 
+
+<div id="" class="alert alert-warning col-12 p-5"style="height:50px">
+no unclassified documents was funded</div>
+
+{% else %}
+
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{{ form_start(form,{'attr':{'id':'docsForm'}}) }}
+<div class="row me-1 pe-1 col-12 ms-1">
+
+    <div class="col-2 bg-white p-0 m-0 rounded-1  ">
+        <h3 class="heads2 col-12 mt-1 ">Files List</h3>
+		<div class="form-check border border-primary rounded  py-1 my-1">
+		<input type="checkbox" id="checkAll" name="checkAll" class="form-check-input mx-1" value=""  style=" cursor: pointer;"/>
+				<span class="form-check-label text-primary">Select All</span> 
+		</div>
+        <fieldset class="mb-3"><div id="form_docs" style="overflow : scroll ;max-height:70vh;min-height:70vh">
+
+		
+        <div id="form_docs" style="overflow : hidden ;">
+            {% for option in form.docs.children %}
+
+                <div class="form-check">
+                <input type="checkbox" id="{{option.vars.id}}" name="{{option.vars.full_name}}" class="form-check-input filesCheckInput" value="{{option.vars.value}}"/>
+                        <span id="classifyDocName"class="form-check-label" hx-target="#preview" hx-post="{{path('doc.classify.preview',{'id':option.vars.value}) }}" hx-swap="outerHTML">{{option.vars.label}}</span>
+                </div>
+            {% endfor %}
+          
+    </div>
+    </fieldset>
+    {{ form_row(form.docs,{'attr' :{'style':'display:none' }}) }}
+
+        {{ form_row(form.id) }}
+    </div>
+    <div class="col-8 bg-white ps-2 rounded-1 rightLeftBorder"  id="preview">
+
+<h3 class="heads2 col-12 mt-1">Select a document </h3>
+
+<div class="loader-container mt-5 pt-5 bg-white col-12" >
+      click on a document name  to see his content 
+		
+<div class=" ms-2  spinner"></div>
+</div>
+<div class="loader-container mt-3 bg-white col-12" >
+<span class="text-muted">(recently added files are under process)</span>
+</div>
+    </div>
+    <div class="col-2 bg-white ps-2 rounded-1 overflow-scroll">
+<h3 class="heads2 col-12 mt-1" >Browser</h3>
+    <ul style="overflow : scroll ;" >
+         {{ _self.display_tree(root) }}
+    </ul>
+   
+	<button type="submit" class="btn btn-primary col-1 me-2 px-2 mx-2 sumitBtn" style="position: fixed;right: 20px;bottom: 20px;">move files</button>
+
+    </div>
+
+</div>
+
+
+
+{{ form_end(form) }}
+
+
+{% macro display_tree(folder) %}
+
+{% if folder.IsDeleted == false %}
+    <li class="my-1" style="text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">
+    <input type="radio" name="location" value="{{folder.id }}" onclick="setAction({{folder.id }});">
+        <span class="arrow" style="text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" >
+            <i class="fa-solid fa-folder me-1 text-warning"></i>
+			<span  style="text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">
+            {{folder.name}}
+		</span>
+        </span>
+        <ul class="nested ms-4 folder-browser" id="child{{folder.id}}">
+            {% for child in folder.folders %}
+                {{ _self.display_tree(child) }}
+            {% endfor %}
+        </ul>
+    </li>
+{% endif %}
+
+
+{% endmacro %}
+
+
+
+
+
+{% endif %}
+
+
+<script>
+
+	all=document.getElementById('checkAll');
+	all.addEventListener("click", function(){
+		checkInput=document.getElementsByClassName('filesCheckInput');
+		if(all.checked===true){
+			for (i = 0; i < checkInput.length; i++)
+			{
+				checkInput[i].checked=true;	
+			}
+		}else if (all.checked===false){
+			for (i = 0; i < checkInput.length; i++)
+			{
+				checkInput[i].checked=false;	
+			}
+		}
+	});
+
+
+
+function setAction(selectedId){
+const hiddenInput = document.getElementsByClassName('folderHidden')[0];
+hiddenInput.value = selectedId;
+    
+    };
+
+</script>	
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}

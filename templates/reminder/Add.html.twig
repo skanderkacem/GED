@@ -1,0 +1,12 @@
+<div class="col-12 rounded p-1  border  border-primary"style="background-color: #f0f2f5;">
+
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+    {{ form_start(form) }}
+        {{ form_row(form.message,{'attr':{'class':'border mt-2'}}) }}
+        {{ form_row(form.triggeredAt, {'attr': {'class': 'border mt-2'}}) }}
+
+<button class="btn btn-secondary col-12 mt-2 " type="submit" hx-post="{{path('addReminder',{'id':id})}}" hx-trigger="click" hx-target="#rm" hx-swap="innerHTML">Add reminder</button>
+        
+    {{ form_end(form) }}
+</div>

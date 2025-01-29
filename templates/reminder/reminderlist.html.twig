@@ -1,0 +1,56 @@
+
+
+<div class="row d-flex justify-content-center overflow-scroll" style="max-height:45vh;height:45vh">
+  <div class="col-12">
+    <div class="card shadow-0 border  border-primary " style="background-color: #f0f2f5;">
+      <div class="card-body p-4">
+    
+        {% if reminders|length > 0  %}
+        {% for reminder in reminders %}
+        <div class="card mb-4 "style="background-color:antiquewhite">
+          <div class="card-body" id="rm{{reminder.id}}">
+        <p class=" col-12 p-2" style="display:flex;justify-content:center; font-weight:bold"><i class="fa-solid fa-clock text-secondary me-1 "></i>  {{ reminder.triggeredAt|date()}}</p>
+            <p class="p-3 border rounded-2 mb-2 bg-white"> {{reminder.message }} <br>
+            </p>
+
+            <div class="d-flex justify-content-between">
+              <div class="d-flex flex-row align-items-center">
+                <img src="{{ asset('uploads/usersPhotos/'~ reminder.user.photo) }}" alt="avatar" width="25"
+                  height="25" />
+                <p class="small mb-0 ms-2">{{reminder.user.firstname }} {{reminder.user.lastname }} </p>
+              </div>
+              <div class="d-flex flex-row align-items-center">
+            
+             {% if  (reminder.user == app.user)  %}
+              <a  href="" hx-post="{{path('reminder.edit',{'id':reminder.id}) }}" hx-trigger="click" hx-target="#rm{{reminder.id}}" hx-swap="innerHTML">
+					
+            <i class="fa-solid fa-edit me-1 text-secondary "></i>
+     </a>
+      {% endif %}
+      {% if is_granted('ROLE_manage_folders') or (reminder.user == app.user) or (reminder.doc.createdBy == app.user) %}
+       <a  href=""hx-post="{{path('deletereminders',{'id':reminder.id}) }}" hx-trigger="click" hx-target="#rm" hx-swap="innerHTML">
+            <i class="fa-solid fa-trash me-1 text-danger"></i>
+     </a>
+      {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+    {% endfor %}
+    {% else %}
+    <div id="" class="alert alert-warning col-12"style="height:50px">
+        No reminders 
+    </div>
+    {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="text-dark">
+<div hx-POST="{{path('addReminder',{'id':id}) }}"
+    hx-trigger="load"
+    hx-swap="outerHTML"
+>
+</div>
+

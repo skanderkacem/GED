@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+      {% block title %}
+        Dashboard | Home
+        			
+      {% endblock %}
+    </title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ asset('assets/img/svg/logo.svg') }}" type="image/x-icon">
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style2.css') }}">
+    <link href="{{ asset('node_modules/@fortawesome/fontawesome-free/css/all.css') }}" rel="stylesheet" />
+    <link href="{{ asset('node_modules/select2/dist/css/select2.min.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('assets/css/customstyles.css') }}">
+
+  </head>
+
+    <body>
+
+
+    <div class="layer"></div>
+      <!-- ! Body -->
+      <div class="page-flex">
+        <!-- ! Sidebar -->
+        <aside class="sidebar">
+          <div class="sidebar-start">
+            <div class="sidebar-head">
+              <a href="{{ path('app.home') }}" class="logo-wrapper" title="Home">
+                <span class="sr-only">
+                  Home
+                </span>
+                <span class="icon logo" aria-hidden="true"></span>
+                <div class="logo-text">
+                  <span class="logo-title">
+                    GED
+                  </span>
+                  <span class="logo-subtitle">
+                    MENU
+                  </span>
+                </div>
+              </a>
+              <button class="sidebar-toggle transparent-btn" title="Menu" type="button">
+                <span class="sr-only">
+                  Toggle menu
+                </span>
+                <span class="icon menu-toggle" aria-hidden="true"></span>
+              </button>
+            </div>
+            {% block sd %}
+              
+        
+            <div class="sidebar-body">
+              <ul class="sidebar-body-menu">
+                <li>
+                  <a class="active" href="{{ path('app.home') }}">
+                    <span class="icon home" aria-hidden="true"></span>
+                    Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a class="show-cat-btn" href="##">
+                    <span class="icon folder" aria-hidden="true"></span>
+                    Folders
+                    										
+                    <span class="category__btn transparent-btn" title="Open list">
+                      <span class="sr-only">
+                        Open list
+                      </span>
+                      <span class="icon arrow-down" aria-hidden="true"></span>
+                    </span>
+                  </a>
+                  <ul class="cat-sub-menu">
+                    <li>
+                      <a href="{{ path('folder.treeView') }}">
+                        <i class="fa fa-folder-open me-3" aria-hidden="true"></i>
+                        Folders
+                      </a>
+                      <a href="{{ path('trash.list') }}">
+                        <i class="fa fa-trash me-3" aria-hidden="true"></i>
+                        My trash
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+
+                <li>
+                  {% if is_granted('ROLE_upload') or is_granted('ROLE_classify') %}
+  
+                    <a class="show-cat-btn" href="##">
+                      <span class="icon " aria-hidden="true"> <i class="fa-solid fa-inbox" style="font-size: x-large;"></i></span>
+                      Classify                    										
+                      <span class="category__btn transparent-btn" title="Open list">
+                        <span class="sr-only">
+                          Open list
+                        </span>
+                        <span class="icon arrow-down" aria-hidden="true"></span>
+                      </span>
+                    </a>
+                    <ul class="cat-sub-menu">
+                      <li>
+                      {% if is_granted('ROLE_classify') %}
+                        <a href="{{ path('app_classify') }}">
+                          <i class="fa-solid fa-box-open me-1" aria-hidden="true"></i>
+                          CLassify Docs
+                        </a>
+                      {% endif %}
+                      {% if is_granted('ROLE_upload') %}
+                        <a href="{{ path('app_upload') }}">
+                        <i class="fa-solid fa-cloud-arrow-up me-1"aria-hidden="true"></i>
+                         Upload Docs
+                        </a>
+                      {% endif %}
+                      </li>
+                    </ul>
+                  {% endif %}
+                  </li>
+  
+  
+                  <li>
+                  {% if is_granted('ROLE_manage_users') or is_granted('ROLE_create_groups') %}
+                    <a class="show-cat-btn" href="##">
+                      <span class="icon setting" aria-hidden="true"></span>
+                      Settings
+                                          
+                      <span class="category__btn transparent-btn" title="Open list">
+                        <span class="sr-only">
+                          Open list
+                        </span>
+                        <span class="icon arrow-down" aria-hidden="true"></span>
+                      </span>
+                    </a>
+                    <ul class="cat-sub-menu">
+                      <li>
+                        {% if is_granted('ROLE_manage_users') %}
+                          <a href="{{ path('app_usersList') }}">
+                            <i class="fa-solid fa-user me-4" aria-hidden="true"></i>
+                            </i> Users
+                           </a>
+                        {% endif %}
+                        {% if is_granted('ROLE_manage_groups') %}
+                          <a href="{{ path('app_groupList') }}">
+                            <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+                            All groups
+                          </a>
+                        {% endif %}
+                        {% if is_granted('ROLE_create_groups') %}
+                          <a href="{{ path('app_groupMyList') }}">
+                            <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+                            My groups
+                          </a>
+                        {% endif %}
+                       </li>
+                      </ul>
+                  {% endif %}
+                  </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+  </div>
+{% endblock %}
+  <div class="sidebar-footer mb-3">
+    <a href="##" class="sidebar-user">
+      <div class="sidebar-user-info">
+        <span class="sidebar-user__title">
+          {{ app.user.firstName }}
+          {{ app.user.lastName }}
+        </span>
+        <span class="sidebar-user__subtitle">
+          {% for role in app.user.roles %}
+            {{ role }}
+            <br>
+          {% endfor %}
+        </span>
+      </div>
+    </a>
+  </div>
+</aside>
+
+<div class="main-wrapper">
+<!-- ! Main nav -->
+<nav class="main-nav--bg ">
+  <div class="container main-nav">
+    <div class="main-nav-start ">
+
+    
+      <form action="/doc/search" method="POST" class=" search-wrapper">
+        <i data-feather="search" aria-hidden="true"></i>
+        <input type="text" required
+        name="search" placeholder="type to search documents..." >
+       </form>
+    </div>
+
+
+    <div class="main-nav-end">
+      <button class="sidebar-toggle transparent-btn" title="Menu" type="button">
+        <span class="sr-only">
+          Toggle menu
+        </span>
+        <span class="icon menu-toggle--gray" aria-hidden="true"></span>
+      </button>
+      <button class="theme-switcher gray-circle-btn" type="button" title="Switch theme">
+        <span class="sr-only">
+          Switch theme
+        </span>
+        <i class="sun-icon" data-feather="sun" aria-hidden="true"></i>
+        <i class="moon-icon" data-feather="moon" aria-hidden="true"></i>
+      </button>
+     
+     
+     
+     
+      <div class="notification-wrapper">
+        <button class="gray-circle-btn dropdown-btn" title="To messages" type="button">
+          <span class="sr-only">
+            To messages
+          </span>
+          <span class="icon notification active" aria-hidden="true"></span>
+        </button>
+        <ul class="users-item-dropdown notification-dropdown dropdown overflow-scroll" style="width:400px;max-height:60vh;z-index:400" id="notif">
+                
+        <div hx-post="{{path('app_notification') }}"
+                    hx-trigger="load"
+                    hx-swap="outerHTML" >
+        </div>
+        </ul>
+      </div>
+      <div class="nav-user-wrapper">
+        <button href="##" class="nav-user-btn dropdown-btn" title="My profile" type="button">
+          <span class="sr-only">
+            My profile
+          </span>
+          <span class="nav-user-img border border-info">
+            <img src="{{ asset('uploads/usersPhotos/'~ app.user.photo) }}" alt="Admin" class="rounded" width="150">
+          </span>
+        </button>
+        <ul class="users-item-dropdown nav-user-dropdown dropdown">
+          <li>
+            <a href="{{ path('app_userDetails',{'id':app.user.id}) }}">
+              <i data-feather="user" aria-hidden="true"></i>
+              <span>
+                profil
+              </span>
+            </a>
+          </li>
+          <li>
+            <a class="danger" href="{{ path('app_logout') }}">
+              <i data-feather="log-out" aria-hidden="true"></i>
+              <span>
+                Log out
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- ! Main -->
+<main class="main m-0" id="skip-target">
+<div class="mx-4">
+{% for message in app.session.flashBag.get('info') %}
+
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+  <strong>Message : </strong>  {{ message }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% for message in app.session.flashBag.get('success') %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message : </strong>  {{ message }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% for message in app.session.flashBag.get('error') %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Message : </strong>  {{ message }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% for message in app.session.flashBag.get('warning') %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Message : </strong>  {{ message }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+
+</div>
+  {% block body %}{% endblock %}
+</main>
+
+<script src="{{ asset('node_modules/jquery/dist/jquery.min.js') }}"></script>
+<script src="{{ asset('node_modules/@popperjs/core/dist/umd/popper.min.js') }}"></script>
+<script src="{{ asset('node_modules/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+<!-- Chart library -->
+<script src="{{ asset('assets/plugins/chart.min.js') }}"></script>
+<!-- Icons library -->
+<script src="{{ asset('assets/plugins/feather.min.js') }}"></script>
+<!-- Custom scripts -->
+<script src="{{ asset('assets/js/script.js') }}"></script>
+<script src="{{ asset('node_modules/select2/dist/js/select2.min.js') }}"></script>
+<script src="{{ asset('node_modules/@fortawesome/fontawesome-free/js/all.js') }}"></script>
+<script src="{{ asset('node_modules/htmx.org/dist/htmx.min.js') }}"></script>
+<script>
+
+var toggler = document.getElementsByClassName("arrow");
+var i;
+
+for (i = 0; i < toggler.length; i++) {
+toggler[i].addEventListener("click", function () {
+this.parentElement.querySelector(".nested").classList.toggle("active");
+
+});
+}
+
+</script>
+<script>
+function loadphoto(){
+const img=document.getElementById('img'),
+input=document.getElementById('registration_form_photo');
+img.src=URL.createObjectURL(input.files[0]);
+}
+
+</script>
+
+{% block javascript %}
+  <script></script>
+{% endblock %}</body></html>

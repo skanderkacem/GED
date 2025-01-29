@@ -1,0 +1,20 @@
+
+
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+    {{ form_start(form,{'attr':{'class':' p-3 Add'}}) }}
+    {{ form_row(form.name,{'attr':{'class':'border mt-3 ','autofocus':true}}) }}
+    {{ form_row(form.members) }}
+   
+        <button type="submit" class="btn btn-primary mt-3 p-2">{{action}} group</button>
+        
+
+    {{ form_end(form) }}
+
+    <script defer>
+      $(document).ready(function(){
+        $('.select2').select2({dropdownParent: $('.Add')});
+
+  
+      });
+  </script>

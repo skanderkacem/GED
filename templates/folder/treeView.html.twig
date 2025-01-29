@@ -1,0 +1,282 @@
+{% extends "home/template.html.twig" %}
+
+{% block title %}
+	Folder | List
+{% endblock %}
+
+
+{% block body %}
+
+
+	<div class="row me-0 pe-1 ms-1">
+		<div class="col-2 bg-white ps-2  rounded-1   " style="min-height:800px;">
+
+
+
+			<h3 class="heads2 col-12 mt-1">Browser</h3>
+
+
+			<div class="accordion" id="accordionExample">
+				{% if is_granted('ROLE_manage_folders')  %}
+
+
+					<div class="accordion-item mt-3">
+						<h6 class="accordion-header" id="headingOne">
+							<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseZero" aria-expanded="true" aria-controls="collapseZero">
+								All Folders
+							</button>
+						</h6>
+						<div id="collapseZero" class="accordion-collapse collapse show" aria-labelledby="headingZero" data-bs-parent="#accordionExample"  style="max-height:70vh;overflow-y:scroll">
+							<div class="accordion-body overflow-scroll">
+								{% set type = 'all' %}
+								<ul class=" ms-2 mt-1" id="foldersBrowser">
+									{{ _self.display_tree3(folder) }}
+
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				{% endif %}
+				{% if not is_granted('ROLE_manage_folders')  %}
+					<div class="accordion-item mt-3">
+						<h6 class="accordion-header" id="headingTwo">
+							<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+								Accessed Folders
+							</button>
+						</h6>
+						<div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="max-height:70vh;overflow-y:scroll">
+							<div class="accordion-body" style="overflow:scroll;">
+
+								<ul class=" ms-2 mt-1" id="foldersBrowser">
+
+									{% for folder in myAccessedFolderList %}
+										{{ _self.display_tree3(folder) }}
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				<div class="accordion-item mt-3 ">
+					<h6 class="accordion-header" id="headingOne">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+							My own folders
+						</button>
+					</h6>
+					<div id="collapseOne" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="max-height:70vh;overflow-y:scroll">
+						<div class="accordion-body overflow-scroll">
+							{% set type = 'all' %}
+							<ul class=" ms-2 mt-1 ">
+								{% for folder in  MyCreatedFolderList  %}
+
+									{{ _self.display_tree3(folder) }}
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+
+
+			{% macro display_tree3(folder) %}
+
+				{% if folder.IsDeleted == false %}
+					<li class="my-1">
+						<span class="arrow" style="text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" hx-target="#folder-content" hx-post="{{path('folder.folder',{'id':folder.id}) }}" hx-swap="outerHTML" id="folder{{folder.id}}">
+							<i class="fa-solid fa-folder me-1 text-warning"></i>
+							{{folder.name}}
+							
+						</span>
+						<ul class="nested  ms-4 folder-browser" id="child{{folder.id}}">
+							{% for child in folder.folders %}
+								{{ _self.display_tree3(child) }}
+							{% endfor %}
+							{% for doc in folder.documents %}
+								{% if doc.IsDeleted == false %}
+									<li class="my-1">
+										<span class="arrow">
+										<a href="{{path('doc.display',{'id':doc.id,'vs':doc.currentVersion}) }}"style="text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">
+											<i class="fa-solid fa-file  me-1 text-primary"></i>
+											{{doc.name}}
+											
+										</a>
+										</span>
+									</li>
+								{% endif %}
+							{% endfor %}
+						</ul>
+					</li>
+				{% endif %}
+
+
+			{% endmacro %}
+			
+
+		</div>
+		
+
+				{% if not  ( id == 0) %}
+				<div class=" row col-10 ms-1 ps-1 pe-1 " id="folder-content" hx-get="{{path('folder.folder',{'id':id}) }}"
+				hx-trigger="load" hx-swap="outerHTML">
+		
+				{% else %}
+				<div class=" row col-10 ms-1 ps-1 pe-1 " id="folder-content">
+				{% endif %}
+		
+			<div class="col-12 py-1 bg-white  ">
+				<div class="row1" style="right: 0%;">
+					<h3 class="px-2 mt-2 ms-5 heads">
+					please select a folder
+					</h3>
+
+
+					<div class="sec-center">
+						<input class="dropdown" type="checkbox" id="dropdown" name="dropdown"/>
+						<label class="for-dropdown" for="dropdown">
+							Action<i class="uil uil-arrow-down fa-solid fa-arrow-down"></i>
+						</label>
+						<div class="section-dropdown">
+							<a href="#" class='b'>please select a folder
+							</a>
+						</div>
+					</div>
+
+				</div>
+
+				<div class='row  px-2 pt-2 mx-1 row2'>
+				{% if  not ( id == 0) %}
+					<div class="loader-container mt-5 bg-light" style="background-color: transparent;">
+						<div class="spinner"></div>
+					</div></div>
+
+
+				{% else %}
+					<div id="" class="alert d-flex col-12" style="height:50px">
+						No folder is selected!!
+						<i class=" ms-1 fa-solid fa-triangle-exclamation text-danger"></i>
+					</div>
+				{% endif %}
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+{% endblock  %}
+{% block sd %}
+
+<div class="sidebar-body">
+<ul class="sidebar-body-menu">
+  <li>
+	<a class="" href="{{ path('app.home') }}">
+	  <span class="icon home" aria-hidden="true"></span>
+	  Dashboard
+	</a>
+  </li>
+  <li>
+	<a class="show-cat-btn active" href="##">
+	  <span class="icon folder" aria-hidden="true"></span>
+	  Folders
+											  
+	  <span class="category__btn transparent-btn" title="Open list">
+		<span class="sr-only">
+		  Open list
+		</span>
+		<span class="icon arrow-down" aria-hidden="true"></span>
+	  </span>
+	</a>
+	<ul class="cat-sub-menu">
+	  <li>
+		<a href="{{ path('folder.treeView') }}" class="active">
+		  <i class="fa fa-folder-open me-3" aria-hidden="true"></i>
+		  Folders
+		</a>
+		<a href="{{ path('trash.list') }}">
+		  <i class="fa fa-trash me-3" aria-hidden="true"></i>
+		  My trash
+		</a>
+	  </li>
+	</ul>
+  </li>
+  <li>
+	{% if is_granted('ROLE_upload') or is_granted('ROLE_classify') %}
+
+	  <a class="show-cat-btn" href="##">
+		<span class="icon " aria-hidden="true"> <i class="fa-solid fa-inbox" style="font-size: x-large;"></i></span>
+		Classify                    										
+		<span class="category__btn transparent-btn" title="Open list">
+		  <span class="sr-only">
+			Open list
+		  </span>
+		  <span class="icon arrow-down" aria-hidden="true"></span>
+		</span>
+	  </a>
+	  <ul class="cat-sub-menu">
+		<li>
+		{% if is_granted('ROLE_classify') %}
+		  <a href="{{ path('app_classify') }}">
+			<i class="fa-solid fa-box-open me-1" aria-hidden="true"></i>
+			CLassify Docs
+		  </a>
+		{% endif %}
+		{% if is_granted('ROLE_upload') %}
+		  <a href="{{ path('app_upload') }}">
+		  <i class="fa-solid fa-cloud-arrow-up me-1"aria-hidden="true"></i>
+		   Upload Docs
+		  </a>
+		{% endif %}
+		</li>
+	  </ul>
+	{% endif %}
+	</li>
+
+
+	<li>
+	{% if is_granted('ROLE_manage_users') or is_granted('ROLE_create_groups') %}
+	  <a class="show-cat-btn" href="##">
+		<span class="icon setting" aria-hidden="true"></span>
+		Settings
+												
+		<span class="category__btn transparent-btn" title="Open list">
+		  <span class="sr-only">
+			Open list
+		  </span>
+		  <span class="icon arrow-down" aria-hidden="true"></span>
+		</span>
+	  </a>
+	  <ul class="cat-sub-menu">
+		<li>
+		  {% if is_granted('ROLE_manage_users') %}
+			<a href="{{ path('app_usersList') }}">
+			  <i class="fa-solid fa-user me-4" aria-hidden="true"></i>
+			  </i> Users
+			 </a>
+		  {% endif %}
+		  {% if is_granted('ROLE_manage_groups') %}
+			<a href="{{ path('app_groupList') }}">
+			  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+			  All groups
+			</a>
+		  {% endif %}
+		  {% if is_granted('ROLE_create_groups') %}
+			<a href="{{ path('app_groupMyList') }}">
+			  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+			  My groups
+			</a>
+		  {% endif %}
+		 </li>
+		</ul>
+	{% endif %}
+	</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+{% endblock %}

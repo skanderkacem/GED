@@ -1,0 +1,301 @@
+{% extends "home/template.html.twig" %}
+
+{% block title %}
+	Folder | List
+{% endblock %}
+
+
+{% block body %}
+
+	<style>
+
+
+		h2 {
+			font-size: 24px;
+			margin-top: 25px;
+			margin-bottom: 20px;
+			font-weight: 300;
+			letter-spacing: 2px;
+		}
+
+		.upload-file {
+			float: left;
+			width: 100%;
+		}
+		.upload-wrapper {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			align-content: center;
+
+		}
+		.upload-file .upload-wrapper label {
+
+			width: 100%;
+			border-radius: 10px;
+			padding: 250px 40px 5px;
+			text-align: center;
+			background: url('images/2813838.jpg') top center no-repeat #fff;
+			background-size: 300px;
+			position: relative;
+			box-shadow: 10px 10px 0 #ffbe32, -10px -10px 0 #32adff;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+		}
+		input[type=file] {
+			width: 100%;
+			height: 80%;
+			opacity: 0;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		.upload-file .upload-wrapper label p {
+			font-size: 20px;
+			font-weight: 300;
+			margin-top: 0;
+			position: absolute;
+			left: 30%;
+			right: 30%;
+			top: 50%;
+		}
+		.upload-file .upload-wrapper label p a {
+			font-weight: 700;
+			color: #007bff;
+		}
+
+		#image-gallery {
+			float: left;
+			width: 100%;
+			margin-top: 20px;
+		}
+		#image-gallery .thumb-Images {
+			float: left;
+			width: 100%;
+		}
+		#image-gallery .thumb-Images li {
+
+			background: #fff;
+			border-radius: 10px;
+			display: flex;
+			padding: 10px;
+			margin-bottom: 30px;
+			position: relative;
+			box-shadow: -10px -10px 0 #ffbe32, 10px 10px 10px rgba(0, 0, 0, 0.1);
+		}
+		#image-gallery .thumb-Images li .file-info {
+			display: inline-block;
+			font-size: 15px;
+			font-weight: 400;
+			width: 70%;
+			text-overflow: ellipsis;
+      overflow: hidden;
+			white-space: nowrap;
+			line-height: 30px;
+		}
+
+		#image-gallery .thumb-Images li  .close i {
+			font-size: 20px;
+		}
+	</style>
+
+	<div class="container px-5">
+		<div class="row px-5 pt-5">
+			<div class="col-11">
+				<div class="upload-file">
+
+
+					<div class="upload-wrapper col-12">
+						{{ form_start(form,{'attr':{'class':'col-12'}}) }}
+						<label class="col-12">
+							{{ form_row(form.files,{'attr':{'class':'border mt-2 mx-2'}}) }}
+
+							<p>Drop your files here.
+								<br>or
+								<a>Browse</a>
+							</p>
+
+							<button type="submit" class="btn btn-primary col-8 mb-2 ">Submit
+							</button>
+						</label>
+						{{ form_end(form) }}
+					</div>
+
+				</div>
+			</div>
+			<div class="col-12">
+				<div class="row">
+					<div class="col-12">
+						<h2 class="mb-0 heads2 offset-2 col-8">Uploaded Files</h2>
+					</div>
+				</div>
+
+				<output id="image-gallery">
+					<ul class="thumb-Images" id="imgList"></ul>
+				</output>
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %}
+
+
+{% block javascript %}
+	<script>
+		const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
+
+$("#form_files").on('change', function (e) {
+for (var i = 0; i < this.files.length; i++) {
+
+nb=1+i;
+let fileBloc = $('<li/>', {class: 'offset-2 col-8'}),
+
+fileName = $('<span/>', {class: 'file-info',text: this.files.item(i).name
+});
+fileBloc.append('<span class="colse mx-2"><i class=\"fa-regular fa-trash-can\" style=\"color: #e2182c;\"></i>  ('+nb+ ') </span>').append(fileName);
+
+$("#imgList").append(fileBloc);
+};
+// Ajout des fichiers dans l'objet DataTransfer
+for (let file of this.files) {
+dt.items.add(file);
+}
+// Mise à jour des fichiers de l'input file après ajout
+this.files = dt.files;
+
+// EventListener pour le bouton de suppression créé
+$('span.colse').click(function () {
+let name = $(this).next('span.file-info').text();
+// Supprimer l'affichage du nom de fichier
+$(this).parent().remove();
+for (let i = 0; i < dt.items.length; i++) { // Correspondance du fichier et du nom
+if (name === dt.items[i].getAsFile().name) { // Suppression du fichier dans l'objet DataTransfer
+dt.items.remove(i);
+continue;
+}
+}
+// Mise à jour des fichiers de l'input file après suppression
+document.getElementById('form_files').files = dt.files;
+});
+});
+	</script>
+{% endblock %}
+
+
+{% block sd %}
+
+<div class="sidebar-body">
+<ul class="sidebar-body-menu">
+  <li>
+	<a class="" href="{{ path('app.home') }}">
+	  <span class="icon home" aria-hidden="true"></span>
+	  Dashboard
+	</a>
+  </li>
+  <li>
+	<a class="show-cat-btn " href="##">
+	  <span class="icon folder" aria-hidden="true"></span>
+	  Folders
+											  
+	  <span class="category__btn transparent-btn" title="Open list">
+		<span class="sr-only">
+		  Open list
+		</span>
+		<span class="icon arrow-down" aria-hidden="true"></span>
+	  </span>
+	</a>
+	<ul class="cat-sub-menu">
+	  <li>
+		<a href="{{ path('folder.treeView') }}">
+		  <i class="fa fa-folder-open me-3" aria-hidden="true"></i>
+		  Folders
+		</a>
+		<a href="{{ path('trash.list') }}">
+		  <i class="fa fa-trash me-3" aria-hidden="true"></i>
+		  My trash
+		</a>
+	  </li>
+	</ul>
+  </li>
+  <li>
+	{% if is_granted('ROLE_upload') or is_granted('ROLE_classify') %}
+
+	  <a class="show-cat-btn active" href="##">
+		<span class="icon " aria-hidden="true"> <i class="fa-solid fa-inbox" style="font-size: x-large;"></i></span>
+		Classify                    										
+		<span class="category__btn transparent-btn" title="Open list">
+		  <span class="sr-only">
+			Open list
+		  </span>
+		  <span class="icon arrow-down" aria-hidden="true"></span>
+		</span>
+	  </a>
+	  <ul class="cat-sub-menu">
+		<li>
+		{% if is_granted('ROLE_classify') %}
+		  <a href="{{ path('app_classify') }}">
+			<i class="fa-solid fa-box-open me-1" aria-hidden="true"></i>
+			CLassify Docs
+		  </a>
+		{% endif %}
+		{% if is_granted('ROLE_upload') %}
+		  <a href="{{ path('app_upload') }}">
+		  <i class="fa-solid fa-cloud-arrow-up me-1"aria-hidden="true"></i>
+		   Upload Docs
+		  </a>
+		{% endif %}
+		</li>
+	  </ul>
+	{% endif %}
+	</li>
+
+
+	<li>
+	{% if is_granted('ROLE_manage_users') or is_granted('ROLE_create_groups') %}
+	  <a class="show-cat-btn" href="##">
+		<span class="icon setting active" aria-hidden="true"></span>
+		Settings
+												
+		<span class="category__btn transparent-btn" title="Open list">
+		  <span class="sr-only">
+			Open list
+		  </span>
+		  <span class="icon arrow-down" aria-hidden="true"></span>
+		</span>
+	  </a>
+	  <ul class="cat-sub-menu">
+		<li>
+		  {% if is_granted('ROLE_manage_users') %}
+			<a href="{{ path('app_usersList') }}">
+			  <i class="fa-solid fa-user me-4" aria-hidden="true"></i>
+			  </i> Users
+			 </a>
+		  {% endif %}
+		  {% if is_granted('ROLE_manage_groups') %}
+			<a href="{{ path('app_groupList') }}">
+			  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+			  All groups
+			</a>
+		  {% endif %}
+		  {% if is_granted('ROLE_create_groups') %}
+			<a href="{{ path('app_groupMyList') }}">
+			  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+			  My groups
+			</a>
+		  {% endif %}
+		 </li>
+		</ul>
+	{% endif %}
+	</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+{% endblock %}

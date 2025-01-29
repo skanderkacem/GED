@@ -1,0 +1,192 @@
+
+<div class=" row col-10 ms-1 ps-1 pe-1 " id="folder-content">
+	<div class="col-12 py-1 bg-white  "  >
+	<div class="row1" style="right: 0%;">
+		<h3 class="px-2 mt-2 ms-3 heads col-8"style="text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">
+		<button id='favbutton' style="background-color: transparent;" hx-target="this" hx-post="{{path('folder.favorite',{'id':folder.id})}}" hx-swap="outerHTML">
+			{% if folder in app.user.favorites %}
+		<i class="fa-solid fa-star mx-1 text-warning"></i>
+		{% else %}
+		<i class="fa-regular fa-star mx-1 text-warning"></i>
+
+		{% endif %}
+		</button>
+		Folder :  {{folder.name}}
+		</h3>
+			
+
+
+	  {% if   ( (is_granted('ROLE_manage_folders')) or ( folder.createdBy == app.user ) or ( app.user.hasAccessonFolder(folder)=='creator') or ( app.user.hasAccessonFolder(folder)=='write') ) %}
+		<div class="sec-center"> 	
+			<input class="dropdown" type="checkbox" id="dropdown" name="dropdown"/>
+			<label class="for-dropdown" for="dropdown"> Action<i class="uil uil-arrow-down fa-solid fa-arrow-down"></i></label>
+			<div class="section-dropdown"> 
+			{% if not ( folder.name == 'root' ) and ( (is_granted('ROLE_manage_folders')) or ( app.user.hasAccessonFolder(folder)=='creator') or ( app.user.hasAccessonFolder(folder.parentFolder)=='write') )   %}
+			<a class="b" href="{{path('folder.delete',{'id':folder.id,'allOrMine':'all'}) }}">
+				<i class="fa-solid fa-trash me-2"></i>
+				Delete Folder
+			</a>
+		{% endif %}
+		
+		{% if  ( folder.name == 'root' ) and ( (is_granted('ROLE_manage_folders')) or ( app.user.hasAccessonFolder(folder)=='creator')  ) %}
+
+			<a class="b" data-bs-toggle="modal" data-bs-target="#EditFolder" hx-target="#editing" hx-post="{{path('folder.edit',{'id':folder.id}) }}" hx-swap="outerHTML" id="folder{{folder.id}}">
+				<i class="fa-solid fa-pen-to-square me-2"></i>
+				Edit Folder
+			</a>
+		{% elseif not ( folder.name == 'root' ) and ( (is_granted('ROLE_manage_folders')) or ( app.user.hasAccessonFolder(folder)=='creator') or ( app.user.hasAccessonFolder(folder.parentFolder)=='write') ) %}
+		    <a class="b" data-bs-toggle="modal" data-bs-target="#EditFolder" hx-target="#editing" hx-post="{{path('folder.edit',{'id':folder.id}) }}" hx-swap="outerHTML" id="folder{{folder.id}}">
+				<i class="fa-solid fa-pen-to-square me-2"></i>
+				Edit Folder
+			</a>
+        {% endif %}
+		
+
+		{% if   ( (is_granted('ROLE_manage_folders')) or ( app.user.hasAccessonFolder(folder)=='creator') or ( app.user.hasAccessonFolder(folder)=='write')  ) %}
+
+			<a  hx-target="#adding" hx-post="{{path('folder.add',{'parentFolder':folder.id}) }}" hx-swap="outerHTML" id="folder{{folder.id}}" class="b" data-bs-toggle="modal" data-bs-target="#AddFolder">
+
+				<i class="fa-solid fa-folder-plus me-2"></i>
+				New Folder
+			</a>
+
+			<a hx-target="#adddoc" hx-post="{{path('addDoc',{'folder':folder.id})}}" hx-swap="outerHTML"  class="b" data-bs-toggle="modal" data-bs-target="#AddDocument">
+
+		<i class="fa-solid fa-file-circle-plus me-2"></i>
+		Add Document
+			</a>
+		{% endif %}
+			</div>
+		</div>
+    {% endif %}
+	</div>
+		<div class='row row-cols-2 px-2 pt-2 mx-1 row2 overflow-scroll' style="max-height:70vh;overflow:scroll">
+			{% if folderlist|length > 0 or folder.documents|length  > 0 %}
+
+
+				{% for folder in folderlist %}
+					<div class='col-2 my-1' id='{{folder.id}}'>
+						<a href="#" class="arrow" hx-target="#folder-content" hx-post="{{path('folder.folder',{'id':folder.id}) }}" hx-swap="outerHTML">
+							<img class="ms-2" src='https://img.icons8.com/color/100/000000/folder-invoices.png' width='40'/>
+
+							<h6 class="mb-0 col-9 "style="text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">{{folder.name }}
+
+							</h6>
+						</a>
+					</div>
+				{% endfor %}
+
+				{% for document in folder.documents %}
+					{% if document.IsDeleted == false %}
+
+
+						<div class='col-2 ' id='{{document.id}}'>
+
+							<a href="{{path('doc.display',{'id':document.id,'vs':document.currentVersion}) }}" >
+								<img class="ms-2" src="https://img.icons8.com/color/100/000000/document.png" width="40"/>
+
+								<h6 class="document-name "style="text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">{{ document.name }}</h6>
+							</a>
+						</div>
+					{% endif %}
+				{% endfor %}
+			{% else %}
+				<div id="" class="alert alert-warning col-12"style="height:50px">
+					this folder is empty</div>
+			{% endif %}
+
+		</div>
+	</div>
+
+	<div id="AddFolderModal">
+
+		<div id='AddFolder' class='modal fade' role='dialog'>
+			<div class='modal-dialog'>
+				<div class='modal-content'>
+					<div class='modal-header'>
+						<h5 class='modal-title'>new folder
+						</h5>
+						<button class='btn-close' data-bs-dismiss='modal'></button>
+					</div>
+					<div class='modal-body Add2'>
+						<div id="adding"  style="height:420px; display: flex;
+						justify-content: center;
+						align-items: center;">
+						<div class="loader-container">
+					<div class="spinner"></div>
+				</div>
+					</div>
+					</div>
+
+
+				</div>
+
+			</div>
+
+		</div>
+
+
+	</div>
+	<div id="EditFolderModal">
+
+		<div id='EditFolder' class='modal fade' role='dialog'>
+			<div class='modal-dialog'>
+				<div class='modal-content'>
+					<div class='modal-header'>
+						<h5 class='modal-title'>Edit folder</h5>
+						<button class='btn-close' data-bs-dismiss='modal'></button>
+					</div>
+					<div class='modal-body 'id="Edit">
+						<div id="editing"  style="height:420px; display: flex;
+						justify-content: center;
+						align-items: center;">
+						<div class="loader-container">
+					<div class="spinner"></div>
+				</div>
+					</div>
+					</div>
+
+
+				</div>
+
+			</div>
+
+		</div>
+
+
+	</div>
+
+	<div id="addDocModal">
+
+		<div  class='modal fade' role='dialog' id='AddDocument'>
+			<div class='modal-dialog'>
+				<div class='modal-content'>
+					<div class='modal-header'>
+						<h5 class='modal-title'>Add new Document</h5>
+						<button class='btn-close' data-bs-dismiss='modal'></button>
+					</div>
+					<div class='modal-body adddoc'>
+						<div id="adddoc" style="height:420px; display: flex;
+						justify-content: center;
+						align-items: center;">
+						<div class="loader-container">
+					<div class="spinner"></div>
+				</div>
+					</div>
+					</div>
+
+
+				</div>
+
+			</div>
+
+		</div>
+
+
+	</div>
+
+</div>
+
+
+
+

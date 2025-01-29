@@ -1,0 +1,26 @@
+
+<object class="col-10"  data="{{ path('doc.show', { id: document.id }) }}" type="application/pdf">
+  <embed src="{{ path('doc.show', { id: document.id }) }}" type="application/pdf" style="min-height: 600px;"/>
+</object>
+
+    <div class="col-2 rounded-1 bg-white px-3">
+        <h5 class=" text-primary my-3 ms-2 ">Actions</h5><hr>
+        {% if   ( (is_granted('ROLE_manage_folders')) or ( document.createdBy == app.user ) ) %}
+            <a class="  btn btn-danger my-2 col-12" href="{{path('Doc.delete',{'id':document.id,'allOrMine':'all'}) }}">
+                <i class="fa-solid fa-trash"></i>
+                Delete Document
+            </a>
+
+            <br>
+            
+            <a class="  btn btn-secondary my-2 col-12" href="{{path('Doc.edit',{'id':document.id,'allOrMine':'all'}) }}">
+            <i class="fa-solid fa-pen-to-square"></i>
+                Edit Document
+            </a>
+            
+            <br>
+
+        {% endif %}
+	
+  </div>
+

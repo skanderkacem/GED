@@ -1,0 +1,12 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+    {{ form_start(form) }}
+
+    <div class="col-12 px-2 my-2">
+    {{ form_row(form.text, {'attr': {'class': 'border mt-2','autofocus':true}}) }}
+    
+    </div>
+    <div class="col-12 px-2">
+        <button class="btn btn-secondary col-12 " type="submit" hx-post="{{path('comment.edit',{'id':id})}}" hx-trigger="click" hx-target="#cm" hx-swap="innerHTML" style="height:45px;"> save changes </button>
+    </div>
+    {{ form_end(form) }}

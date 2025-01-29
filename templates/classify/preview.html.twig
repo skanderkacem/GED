@@ -1,0 +1,10 @@
+	
+			<div class="col-8 bg-white ps-2 rounded-1 rightLeftBorder"  id="preview">
+
+                 <h3 class="heads2 col-12 mt-1 ">{{document.name}}</h3>
+                <div class='row  pt-2 px-1' style="min-height: 800px;">
+		
+                      <embed class='col-12' src="{{ path('classify.show', { id: document.id}) }}" type="application/pdf"/>
+                
+                 </div>
+            </div>

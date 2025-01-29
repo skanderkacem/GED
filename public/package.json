@@ -1,0 +1,20 @@
+{
+  "name": "public",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.3.0",
+    "bootstrap": "^5.2.3",
+    "bootstrap-icons": "^1.10.5",
+    "htmx.org": "^1.8.6",
+    "jquery": "^3.6.3",
+    "popper": "^1.0.1",
+    "select2": "^4.1.0-rc.0"
+  }
+}

@@ -1,0 +1,20 @@
+<div class='row row-cols-2 px-2 pt-2 mx-1 overflow-scroll'>
+
+{% for folder in app.user.favorites %}
+    {% if folder.IsDeleted == false  %}
+
+    <div class='col-2 my-1' id='{{folder.id}}'>
+        <a href="{{path('folder.treeView',{'selectedFolderId':folder.id}) }}">
+            <img class="ms-2" src='https://img.icons8.com/color/100/000000/folder-invoices.png' width='40'/>
+
+            <h6 class="mb-0 col-9 overflow-scroll">{{folder.name }}
+
+            </h6>
+        </a>
+    </div>
+
+
+    {% endif %}
+{% endfor %}
+
+</div>

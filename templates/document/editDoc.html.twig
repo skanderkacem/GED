@@ -1,0 +1,13 @@
+
+
+    {% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+
+    {{ form_start(form,{'attr':{'class':'Add','action':"{{path('doc.edit',{'id':id)}}"}}) }}
+        {{ form_row(form.name,{'attr':{'class':'border mt-2'}}) }}
+
+        {{ form_row(form.file,{'attr':{'class':'border mt-2' }}) }}
+
+        {{ form_row(form.submitedit,{'attr':{'class':'btn btn-primary mt-3 p-2 col-12','type':'submit'}}) }}
+        
+    {{ form_end(form) }}

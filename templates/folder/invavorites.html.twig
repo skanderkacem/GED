@@ -1,0 +1,8 @@
+<button id='favbutton' style="background-color: transparent;" hx-target="this" hx-post="{{path('folder.favorite',{'id':folder.id})}}" hx-swap="outerHTML">
+
+{% if in == true %}
+<i class="fa-solid fa-star  mx-1 text-warning"></i>
+{% else %}
+<i class="fa-regular fa-star mx-1 text-warning"></i>
+{% endif %}
+</button>

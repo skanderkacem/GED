@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check email</title>
+        <link rel="stylesheet" href="{{asset('assets/css/bootstrap.css')}}">
+         <link rel="stylesheet" href="{{asset('assets/css/style.min.css')}}">
+</head>
+<body>
+
+    <main class="page-center">
+    <article class="sign-up">
+    <div class="sign-up-form form col-4 offset-4 rounded shadow">
+        <div class="d-grid gap-2 d-md-flex justify-content-end mb-3">
+        <a href="{{path('app_login') }}" role="btn" class="btn btn-close"></a>
+        </div>
+
+        <p>
+            If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
+            This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+        </p>
+        <p class="mt-3">If you don't receive an email please check your spam folder, <br><div class="mt-3 mb-0">or</div> <br> <a href="{{ path('app_forgot_password_request') }}" class="text-white btn btn-primary mt-0 ms-3">try again</a></p>
+
+        
+    </div>
+
+    </article>
+  </main>
+  
+
+
+  
+</body>
+</html>

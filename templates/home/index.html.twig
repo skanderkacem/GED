@@ -1,0 +1,148 @@
+{% extends 'home/template.html.twig' %}
+
+{% block title %}
+Dashboard | Home
+      
+{% endblock %}
+
+{% block body %}
+  
+ 
+    
+ 
+  <div class="container">
+{% for reminder in reminders %}
+{% if (  app.user.hasAccessonFolder(reminder.doc.folder)=='write' or app.user.hasAccessonFolder(reminder.doc.folder)=='read' or app.user.hasAccessonFolder(reminder.doc.folder)=='creator' or (is_granted('ROLE_manage_folders')))  %}
+
+<div class="alert alert-info alert-dismissible fade show" role="alert" >
+<a href="{{path('doc.display',{'id':reminder.doc.id,'vs':reminder.doc.currentVersion}) }}"><strong>Reminder : </strong>on <span class="text-primary me-2"style=" word-break: break-all;">📄 {{reminder.doc.name}} : </span><br> <div class="px-5 mt-1"><span  style=" word-break: break-all;">" {{ reminder.message }} " </span> </div>
+</a>
+<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+{% endfor %}
+
+  <div class="row stat-cards ps-2">
+  {% if is_granted('ROLE_manage_folders')  %} 
+    <div class="col-md-6 col-xl-3">
+      <article class="stat-cards-item">
+        <div class="stat-cards-icon bg-primary" style="--bs-bg-opacity: .5;">
+      <i class="fa-regular fa-file text-white" style="width:24; height:24;"></i>
+
+      </div>
+      
+        <div class="stat-cards-info">
+          <p class="stat-cards-info__num">{{nbrDocT}}</p>
+          <p class="stat-cards-info__title">Total Documents</p>
+        </div>
+      </article>
+    </div>
+    <div class="col-md-6 col-xl-3">
+      <article class="stat-cards-item">
+        <div class="stat-cards-icon bg-warning" style="--bs-bg-opacity: .5;">
+      <i class="fa-regular fa-file text-white" style="width:24; height:24;"></i>
+    </div>
+        <div class="stat-cards-info">
+          <p class="stat-cards-info__num">{{nbrDocM}}</p>
+          <p class="stat-cards-info__title"> Total Documents</p>
+          <p class="stat-cards-info__progress">
+            <span class="stat-cards-info__profit success">
+                  This month
+            </span>
+          
+          </p>
+        </div>
+      </article>
+    </div>
+    <div class="col-md-6 col-xl-3">
+      <article class="stat-cards-item">
+        <div class="stat-cards-icon bg-info" style="--bs-bg-opacity: .5;">
+      <i class="fa-regular fa-file text-white" style="width:24; height:24;"></i>
+        </div>
+        <div class="stat-cards-info">
+          <p class="stat-cards-info__num">{{nbrDocD}}</p>
+          <p class="stat-cards-info__title"> Total Documents</p>
+          <p class="stat-cards-info__progress">
+            <span class="stat-cards-info__profit success">
+              Today
+            </span>
+          
+          </p>
+        </div>
+      </article>
+    </div>
+    <div class="col-md-6 col-xl-3">
+      <article class="stat-cards-item">
+        <div class="stat-cards-icon success">
+      <i class="fa-regular fa-folder-open text-warning" style="width:24; height:24;"></i>
+          </div>
+        <div class="stat-cards-info">
+          <p class="stat-cards-info__num">{{nbrFolder}}</p>
+          <p class="stat-cards-info__title">Total Folders</p>
+
+        </div>
+      </article>
+    </div>
+    {% endif %}
+    <div class="col-md-6 col-xl-3 mt-2">
+      <article class="stat-cards-item">
+        <div class="stat-cards-icon success">
+      <i class="fa-regular fa-folder-open text-warning" style="width:24; height:24;"></i>
+          </div>
+        <div class="stat-cards-info">
+        
+          <p class="stat-cards-info__num">{{ myFolders }}</p>
+          <p class="stat-cards-info__title">My Folders</p>
+        </div>
+      </article>
+    </div>
+    <div class="col-md-6 col-xl-3 mt-2">
+      <article class="stat-cards-item">
+        <div class="stat-cards-icon bg-info" style="--bs-bg-opacity: .5;">
+      <i class="fa-regular fa-file text-white" style="width:24; height:24;"></i>
+        </div>
+        <div class="stat-cards-info">
+          <p class="stat-cards-info__num">{{ myDocs }}</p>
+          <p class="stat-cards-info__title"> My Documents</p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+ 
+<div class="row mt-2 px-2">
+  <div class="col-lg-7">
+    <div class="chart bg-white rounded" style="height:72vh;max-height:72vh;">
+     <div class="top-cat-title pt-3 ms-3" >
+        <h3>Favorite Folders</h3>
+       
+      </div>
+
+    <div hx-post="{{path('fav_folders') }}"
+        hx-trigger="load"
+        hx-swap="outerHTML" >
+      </div>
+
+
+    </div>
+
+  </div>
+  <div class="col-lg-5">
+  
+    <article class="white-block">
+      <div class="top-cat-title">
+        <h3>Notifications</h3>
+       
+      </div>
+      <ul class="top-cat-list overflow-scroll" style="height:60vh;max-height:60vh;">
+      <div hx-post="{{path('dash_notification') }}"
+        hx-trigger="load"
+        hx-swap="outerHTML" >
+      </div>
+      </ul>
+    </article>
+  </div>
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,131 @@
+
+        {% for notif in notifications %}
+ {% if  notif.document and (  app.user.hasAccessonFolder(notif.document.folder)=='write' or app.user.hasAccessonFolder(notif.document.folder)=='read' or app.user.hasAccessonFolder(notif.document.folder)=='creator' or (is_granted('ROLE_manage_folders'))) %}
+              
+
+            <a href="{{path('doc.display',{'id':notif.document.id,'vs':notif.document.currentVersion}) }}">
+            <div class="row "  style="display:flex;justify-content:flex-start" >
+            <img src="{{ asset('uploads/usersPhotos/'~ notif.user.photo) }}" alt="user"  id="img3">
+          
+              <div class="col-10 p-0" style=" display: -webkit-box;
+              display: -ms-flexbox;
+              display: flex;
+              -webkit-box-orient: vertical;
+              -webkit-box-direction: normal;
+              -ms-flex-direction: column;
+              flex-direction: column;" >
+                
+                <span class="text-primary ps-2">
+              {{notif.user.firstname }} {{notif.user.lastname }} </span> 
+              <span class="ps-3">{{notif.action }}</span>
+              
+                <span style=" align-self:center;font-size: small;
+                line-height: 1.2;
+                color: #767676;">
+                  on {{notif.createdAt|date() }}
+                </span>
+              </div>
+          
+            </div>
+           
+            </a>
+          </li>
+{% elseif  notif.comment and (  app.user.hasAccessonFolder(notif.comment.doc.folder)=='write' or app.user.hasAccessonFolder(notif.comment.doc.folder)=='read' or app.user.hasAccessonFolder(notif.comment.doc.folder)=='creator' or (is_granted('ROLE_manage_folders')))  %}
+
+    <a href="{{path('doc.display',{'id':notif.comment.doc.id,'vs':notif.comment.doc.currentVersion}) }}">
+    <div class="row "  style="display:flex;justify-content:flex-start" >
+    <img src="{{ asset('uploads/usersPhotos/'~ notif.user.photo) }}" alt="user"  id="img3">
+  
+      <div class="col-10 p-0" style=" display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;" >
+        
+        <span class="text-primary ps-2">
+      {{notif.user.firstname }} {{notif.user.lastname }} </span> 
+      <span class="ps-3">{{notif.action }}</span>
+      
+        <span style=" align-self:center;font-size: small;
+        line-height: 1.2;
+        color: #767676;">
+          on {{notif.createdAt|date() }}
+        </span>
+      </div>
+  
+    </div>
+   
+    </a>
+  </li>
+{% elseif  notif.reminder and (  app.user.hasAccessonFolder(notif.reminder.doc.folder)=='write' or app.user.hasAccessonFolder(notif.reminder.doc.folder)=='read' or app.user.hasAccessonFolder(notif.reminder.doc.folder)=='creator' or (is_granted('ROLE_manage_folders')))  %}
+
+<li>
+    <a href="{{path('doc.display',{'id':notif.reminder.doc.id,'vs':notif.reminder.doc.currentVersion}) }}">
+    <div class="row "  style="display:flex;justify-content:flex-start" >
+    <img src="{{ asset('uploads/usersPhotos/'~ notif.user.photo) }}" alt="user"  id="img3">
+  
+      <div class="col-10 p-0" style=" display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;" >
+        
+        <span class="text-primary ps-2">
+      {{notif.user.firstname }} {{notif.user.lastname }} </span> 
+      <span class="ps-3">{{notif.action }}</span>
+      
+        <span style=" align-self:center;font-size: small;
+        line-height: 1.2;
+        color: #767676;">
+          on {{notif.createdAt|date() }}
+        </span>
+      </div>
+  
+    </div>
+   
+    </a>
+  </li>
+{% elseif  notif.folder and (  app.user.hasAccessonFolder(notif.folder)=='write' or app.user.hasAccessonFolder(notif.folder)=='read' or app.user.hasAccessonFolder(notif.folder)=='creator' or (is_granted('ROLE_manage_folders')))  %}
+
+<li>
+  <a href="{{path('folder.treeView',{'selectedFolderId':notif.folder.id}) }}">
+  <div class="row "  style="display:flex;justify-content:flex-start" >
+  <img src="{{ asset('uploads/usersPhotos/'~ notif.user.photo) }}" alt="user"  id="img3">
+
+    <div class="col-10 p-0" style=" display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;" >
+      
+      <span class="text-primary ps-2">
+    {{notif.user.firstname }} {{notif.user.lastname }} </span> 
+    <span class="ps-3">{{notif.action }}</span>
+    
+      <span style=" align-self:center;font-size: small;
+      line-height: 1.2;
+      color: #767676;">
+        on {{notif.createdAt|date() }}
+      </span>
+    </div>
+
+  </div>
+ 
+  </a>
+</li>
+{% endif %}
+        {% endfor %}
+
+
+        <div hx-get="{{path('dash_notification') }}"
+        hx-trigger="load delay:60s"
+        hx-swap="innerHTML"
+        hx-target="#notif"
+    >
+    </div>

@@ -1,0 +1,54 @@
+
+
+
+
+
+<div class="container justify-content-center mt-1  overflow-scroll" style="max-height:60vh;height:60vh">
+{% if comments|length > 0  %}
+    {% for comment in comments %}
+    <div class=" py-2 my-1  bg-white rounded-1">
+        <div class="second py-2 px-2"> 
+            <div class="d-flex justify-content-between py-1 pt-1 mx-1">
+                <div><img src="{{ asset('uploads/usersPhotos/avatar.png') }}" width="18"><span class="ms-2"style="font-weight:bold;">{{ comment.user.firstname}} {{ comment.user.lastname}}</span></div>
+                <div><span class="text-muted me-1"style="font-size:14px;">{{ comment.updatedAt|date()}} </span></div>
+            </div>
+            <div class="border border-primary mx-2  rounded p-2" id="commtext{{comment.id}}">
+                 <span class="text1"style=" word-break: break-all;">{{comment.text }}</span>
+             </div>
+             
+                
+            
+            <div  class="col-12 mt-1"style="display:flex;justify-content : end;" >
+             {% if (comment.user == app.user) %}
+              <a  href="" hx-post="{{path('comment.edit',{'id':comment.id}) }}" hx-trigger="click" hx-target="#commtext{{comment.id}}" hx-swap="innerHTML">
+					
+					<i class="fa-solid fa-edit me-1 text-secondary"></i>
+			 </a>
+             {% endif %}
+             {% if is_granted('ROLE_manage_folders') or (comment.user == app.user) or (comment.doc.createdBy == app.user) %}
+             <a  href=""hx-post="{{path('deletecomments',{'id':comment.id}) }}" hx-trigger="click" hx-target="#cm" hx-swap="innerHTML">
+					<i class="fa-solid fa-trash me-1 text-danger"></i>
+			 </a>
+              {% endif %}
+            </div>
+
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div id="" class="alert alert-warning col-12"style="height:50px">
+        No comments 
+    </div>
+    {% endif %}
+</div>
+
+<hr class="text-dark">
+<form action="/Addcomments" method="POST" hx-post="{{path('comment_create',{'id':id})}}" class="row">
+<div class="col-12 px-2 my-2">
+    <input class="form-control  bg-white" type="text" id="comment" name="comment" required placeholder="type a comment" style="height:50px;">
+
+</div>
+<div class="col-12 px-2">
+<button class="btn btn-secondary col-12" type="submit" hx-post="{{path('comment_create',{'id':id})}}" hx-trigger="click" hx-target="#cm" style="height:45px;"> Comment</button>
+</div>
+</form>

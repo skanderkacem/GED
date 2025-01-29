@@ -1,0 +1,319 @@
+
+
+
+
+{% extends "home/template.html.twig" %}
+
+{% block title %}
+	Doc | Show
+{% endblock %}
+
+{% block sd %}
+
+<div class="sidebar-body">
+<ul class="sidebar-body-menu">
+  <li>
+	<a class="" href="{{ path('app.home') }}">
+	  <span class="icon home" aria-hidden="true"></span>
+	  Dashboard
+	</a>
+  </li>
+  <li>
+	<a class="show-cat-btn active" href="##">
+	  <span class="icon folder" aria-hidden="true"></span>
+	  Folders
+											  
+	  <span class="category__btn transparent-btn" title="Open list">
+		<span class="sr-only">
+		  Open list
+		</span>
+		<span class="icon arrow-down" aria-hidden="true"></span>
+	  </span>
+	</a>
+	<ul class="cat-sub-menu">
+	  <li>
+		<a href="{{ path('folder.treeView') }}" >
+		  <i class="fa fa-folder-open me-3" aria-hidden="true"></i>
+		  Folders
+		</a>
+		<a href="{{ path('trash.list') }}">
+		  <i class="fa fa-trash me-3" aria-hidden="true"></i>
+		  My trash
+		</a>
+	  </li>
+	</ul>
+  </li>
+  <li>
+	{% if is_granted('ROLE_upload') or is_granted('ROLE_classify') %}
+
+	  <a class="show-cat-btn" href="##">
+		<span class="icon " aria-hidden="true"> <i class="fa-solid fa-inbox" style="font-size: x-large;"></i></span>
+		Classify                    										
+		<span class="category__btn transparent-btn" title="Open list">
+		  <span class="sr-only">
+			Open list
+		  </span>
+		  <span class="icon arrow-down" aria-hidden="true"></span>
+		</span>
+	  </a>
+	  <ul class="cat-sub-menu">
+		<li>
+		{% if is_granted('ROLE_classify') %}
+		  <a href="{{ path('app_classify') }}">
+			<i class="fa-solid fa-box-open me-1" aria-hidden="true"></i>
+			CLassify Docs
+		  </a>
+		{% endif %}
+		{% if is_granted('ROLE_upload') %}
+		  <a href="{{ path('app_upload') }}">
+		  <i class="fa-solid fa-cloud-arrow-up me-1"aria-hidden="true"></i>
+		   Upload Docs
+		  </a>
+		{% endif %}
+		</li>
+	  </ul>
+	{% endif %}
+	</li>
+
+
+	<li>
+	{% if is_granted('ROLE_manage_users') or is_granted('ROLE_create_groups') %}
+	  <a class="show-cat-btn" href="##">
+		<span class="icon setting" aria-hidden="true"></span>
+		Settings
+												
+		<span class="category__btn transparent-btn" title="Open list">
+		  <span class="sr-only">
+			Open list
+		  </span>
+		  <span class="icon arrow-down" aria-hidden="true"></span>
+		</span>
+	  </a>
+	  <ul class="cat-sub-menu">
+		<li>
+		  {% if is_granted('ROLE_manage_users') %}
+			<a href="{{ path('app_usersList') }}">
+			  <i class="fa-solid fa-user me-4" aria-hidden="true"></i>
+			  </i> Users
+			 </a>
+		  {% endif %}
+		  {% if is_granted('ROLE_manage_groups') %}
+			<a href="{{ path('app_groupList') }}">
+			  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+			  All groups
+			</a>
+		  {% endif %}
+		  {% if is_granted('ROLE_create_groups') %}
+			<a href="{{ path('app_groupMyList') }}">
+			  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+			  My groups
+			</a>
+		  {% endif %}
+		 </li>
+		</ul>
+	{% endif %}
+	</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+{% endblock %}
+
+
+{% block body %}
+
+	<div class="row me-0 pe-1 ms-1">
+		<div class="col-2 bg-white ps-2  rounded-1   " style="min-height:800px;" hx-get="{{path('folder.list') }}"
+		hx-trigger="load"
+		hx-swap="outerHTML">
+				<div class="loader-container mt-5 bg-white col-12" >
+			<div class="spinner"></div>
+		</div>
+	</div>
+
+	
+		<div class=" row col-10 ms-1 ps-1 pe-1 " id="folder-content">
+			<div class="col-12 py-1 bg-white  ">
+			<div class="row1" style="right: 0%;">
+				<h3 class="px-2 mt-2 ms-5 heads col-6"style="text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">Document :
+					{{document.name}}
+				</h3>
+				<div
+					style="display:flex;align-items:flex-end;">
+		
+		
+					
+					<button type="button" class="btn-comment me-2 px-3" data-bs-toggle="modal" data-bs-target="#exampleModal" hx-target="#cm" hx-post="{{path('comment_show',{'id':document.id}) }}" hx-swap="innerHTML">
+						<i class="fa-solid fa-comments"></i>
+					</button>
+		
+					<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content " style="background-color:antiquewhite">
+								<div class="modal-header bg-secondary">
+									<h3 class="px-2 my-1  heads text-white"style="text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">Document :
+										{{document.name}}/comments
+									</h3>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body " id='cm'>
+		
+									<div  style="height:420px; display: flex;
+														justify-content: center;
+														align-items: center;">
+		
+										<div class="loader-container">
+											<div class="spinner"></div>
+										</div>
+									</div>
+		
+		
+								</div>
+							</div>
+						</div>
+					</div>
+		
+		
+		
+						
+					<button type="button" class="btn-comment me-2 px-3" data-bs-toggle="modal" data-bs-target="#addreminder" hx-target="#rm" hx-post="{{path('reminders',{'id':document.id}) }}" hx-swap="innerHTML">
+				<i class="fa-solid fa-clock"></i></button>
+		
+					
+					<div class="modal fade" id="addreminder" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content "style="background-color: #f0f2f5;">
+								<div class="modal-header bg-secondary">
+									<h3 class="px-2 mb-1 text-white">Reminders-List
+									</h3>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body " id='rm'>
+		
+									<div  style="height:420px; display: flex;
+														justify-content: center;
+														align-items: center;">
+		
+										<div class="loader-container">
+											<div class="spinner"></div>
+										</div>
+									</div>
+		
+		
+								</div>
+							</div>
+						</div>
+					</div>
+		
+		
+		
+					<label class="dropdown2 me-1">
+		
+						<div class="dd-button">
+							Versions
+						</div>
+		
+						<input type="checkbox" class="dd-input" id="test">
+		
+						<ul class="dd-menu">
+		
+							{% for vs in versions   %}
+								{% if vs.number == version %}
+									<li class="text-primary">
+										V-{{vs.number}}(shown)
+									</li>
+								</a>
+							</li>
+		
+						{% else %}
+		
+							<li>
+								<a class="b2"  href="{{path('doc.display',{'id':document.id,'vs': vs.number }) }}">
+									Version
+									{{vs.number}}
+								</a>
+							</li>
+						{% endif %}
+						<li class="divider"></li>
+					{% endfor %}
+		
+				</ul>
+		
+			</label>
+		
+		{% if   ( (is_granted('ROLE_manage_folders')) or ( document.createdBy == app.user ) or ( app.user.hasAccessonFolder(document.folder)=='creator') or ( app.user.hasAccessonFolder(document.folder)=='write') ) %}
+			<div class="sec-center">
+				<input class="dropdown" type="checkbox" id="dropdown" name="dropdown"/>
+				<label class="for-dropdown" for="dropdown">
+					Action<i class="uil uil-arrow-down fa-solid fa-arrow-down"></i>
+				</label>
+				<div class="section-dropdown">
+		
+					
+						<a class="b" href="{{path('Doc.delete',{'id':document.id,'allOrMine':'all'}) }}">
+							<i class="fa-solid fa-trash me-2"></i>
+							Delete Document
+						</a>
+		
+						<a  hx-target="#adddoc" hx-post="{{path('Doc.edit',{'id':document.id,'allOrMine':'all'}) }}" hx-swap="outerHTML" class="b" data-bs-toggle="modal" data-bs-target="#AddDocument">
+							<i class="fa-solid fa-pen-to-square me-2"></i>
+							Edit Document
+						</a>
+		
+					
+					{% if not( version == document.currentVersion) %}
+						<a class="b" href="{{path('Doc.deleteversion',{'id':document.id,'vs':version}) }}" >
+							<i class="fa-solid fa-eraser me-2"></i>
+							Delete  version
+						</a>
+		
+						<a class="b" href="{{path('Doc.restoreversion',{'id':document.id,'vs':version}) }}" >
+							<i class="fa-solid fa-retweet me-2"></i>
+							resotre  version
+						</a>
+					{% endif %}
+				</div>
+			</div>
+			{% endif %}
+		
+		</div></div><div class='row  pt-2 px-1' style="min-height: 800px;">
+		
+		<embed class='col-12' src="{{ path('doc.show', { id: document.id,'vs': version }) }}" type="application/pdf"/></div><div id="addDocModal">
+		
+		<div class='modal fade' role='dialog' id='AddDocument'>
+			<div class='modal-dialog'>
+				<div class='modal-content'>
+					<div class='modal-header'>
+						<h5 class='modal-title'>Edit Document</h5>
+						<button class='btn-close' data-bs-dismiss='modal'></button>
+					</div>
+					<div class='modal-body adddoc'>
+						<div id="adddoc" style="height:420px; display: flex;
+												justify-content: center;
+												align-items: center;">
+							<div class="loader-container">
+								<div class="spinner"></div>
+							</div>
+						</div>
+					</div>
+		
+		
+				</div>
+		
+			</div>
+		
+		</div></div>
+		
+			
+		</div>
+	</div>
+
+
+{% endblock  %}
+{% block javascript %}
+	<script></script>
+{% endblock %}
+

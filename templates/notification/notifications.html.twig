@@ -1,0 +1,85 @@
+
+        {% for notif in notifications %}
+ {% if  notif.document and (  app.user.hasAccessonFolder(notif.document.folder)=='write' or app.user.hasAccessonFolder(notif.document.folder)=='read' or app.user.hasAccessonFolder(notif.document.folder)=='creator' or (is_granted('ROLE_manage_folders'))) %}
+              
+       
+          <li>
+            <a href="{{path('doc.display',{'id':notif.document.id,'vs':notif.document.currentVersion}) }}" class="col-12" style="justify-content:flex-start">
+              <div class="notification-dropdown-icon info">
+               <img src="{{ asset('uploads/usersPhotos/'~ notif.user.photo) }}" alt="user">
+              </div>
+              <div class="notification-dropdown-text col-10" >
+                <span class="notification-dropdown__title">
+                <span class="text-primary">
+                  {{notif.user.firstname }} {{notif.user.lastname }} </span> {{notif.action }}
+                </span>
+                <span class="notification-dropdown__subtitle ps-5">
+                  on {{notif.createdAt|date() }}
+                </span>
+              </div>
+            </a>
+          </li>
+{% elseif  notif.comment and (  app.user.hasAccessonFolder(notif.comment.doc.folder)=='write' or app.user.hasAccessonFolder(notif.comment.doc.folder)=='read' or app.user.hasAccessonFolder(notif.comment.doc.folder)=='creator' or (is_granted('ROLE_manage_folders')))  %}
+
+<li>
+  <a href="{{path('doc.display',{'id':notif.comment.doc.id,'vs':notif.comment.doc.currentVersion}) }}" class="col-12" style="justify-content:flex-start">
+    <div class="notification-dropdown-icon info">
+    <img src="{{ asset('uploads/usersPhotos/'~ notif.user.photo) }}" alt="user">
+    </div>
+    <div class="notification-dropdown-text col-10" >
+      <span class="notification-dropdown__title">
+      <span class="text-primary">
+    {{notif.user.firstname }} {{notif.user.lastname }} </span> {{notif.action }}
+      </span>
+      <span class="notification-dropdown__subtitle ps-5">
+        on {{notif.createdAt|date() }}
+      </span>
+    </div>
+  </a>
+</li>
+{% elseif  notif.reminder and (  app.user.hasAccessonFolder(notif.reminder.doc.folder)=='write' or app.user.hasAccessonFolder(notif.reminder.doc.folder)=='read' or app.user.hasAccessonFolder(notif.reminder.doc.folder)=='creator' or (is_granted('ROLE_manage_folders')))  %}
+
+<li>
+  <a href="{{path('doc.display',{'id':notif.reminder.doc.id,'vs':notif.reminder.doc.currentVersion}) }}" class="col-12" style="justify-content:flex-start">
+    <div class="notification-dropdown-icon info">
+    <img src="{{ asset('uploads/usersPhotos/'~ notif.user.photo) }}" alt="user">
+    </div>
+    <div class="notification-dropdown-text col-10" >
+      <span class="notification-dropdown__title">
+      <span class="text-primary">
+    {{notif.user.firstname }} {{notif.user.lastname }} </span> {{notif.action }}
+      </span>
+      <span class="notification-dropdown__subtitle ps-5">
+        on {{notif.createdAt|date() }}
+      </span>
+    </div>
+  </a>
+</li>
+{% elseif  notif.folder and (  app.user.hasAccessonFolder(notif.folder)=='write' or app.user.hasAccessonFolder(notif.folder)=='read' or app.user.hasAccessonFolder(notif.folder)=='creator' or (is_granted('ROLE_manage_folders')))  %}
+
+<li>
+  <a href="{{path('folder.treeView',{'selectedFolderId':notif.folder.id}) }}" class="col-12" style="justify-content:flex-start" >
+    <div class="notification-dropdown-icon info">
+    <img src="{{ asset('uploads/usersPhotos/'~ notif.user.photo) }}" alt="user">
+    </div>
+    <div class="notification-dropdown-text col-10" >
+      <span class="notification-dropdown__title">
+      <span class="text-primary">
+    {{notif.user.firstname }} {{notif.user.lastname }} </span> {{notif.action }}
+      </span>
+      <span class="notification-dropdown__subtitle ps-5">
+        on {{notif.createdAt|date() }}
+      </span>
+    </div>
+  </a>
+</li>
+{% endif %}
+        {% endfor %}
+
+
+        <div hx-get="/notifications"
+        hx-trigger="load delay:60s"
+        hx-swap="innerHTML"
+        hx-target="#notif"
+    >
+    </div>

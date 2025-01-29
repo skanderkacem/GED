@@ -1,0 +1,304 @@
+{% extends "home/template.html.twig" %}
+
+{% block title %}
+	Users | List
+{% endblock %}
+
+
+{% block body %}
+
+
+<style>
+	.card {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		word-wrap: break-word;
+		background-color: #fff;
+		background-clip: border-box;
+		border: 0 solid transparent;
+		border-radius: 0;
+	}
+	.btn-circle.btn-lg, .btn-group-lg>.btn-circle.btn {
+		width: 50px;
+		height: 50px;
+		padding: 14px 15px;
+		font-size: 18px;
+		line-height: 23px;
+	}
+	.text-muted {
+		color: #8898aa!important;
+	}
+	[type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
+		cursor: pointer;
+	}
+	.btn-circle {
+		border-radius: 100%;
+		width: 40px;
+		height: 40px;
+		padding: 10px;
+	}
+	.user-table tbody tr .category-select {
+		max-width: 150px;
+		border-radius: 20px;
+	}
+
+</style>
+
+<div class="col-12 px-4">
+<div class="card">
+<div class="card-header row1  pb-1" style="background-color :cadetblue !important;">
+<h3 class="px-2 my-2 ms-2  pt-1 heads text-white ">
+Manage Users
+</h3>
+
+<a class=" btn btn-light text-info mx-2 my-1" style="height:45px" hx-post="{{path('user.add')}}" hx-target="#AddUser" hx-swap="outerHTML" data-bs-toggle="modal" data-bs-target="#AddUserModal">
+	<i class="fa-solid fa-user-plus"></i>
+	New user
+</a>
+
+</div>
+
+<div class="table-responsive">
+	<table class="table no-wrap user-table mb-0">
+	  <thead>
+		<tr>
+		  <th scope="col" class="border-0 text-uppercase font-medium pl-4">#</th>
+		<th scope="col" class="border-0 text-uppercase font-medium">Photo</th>
+		  <th scope="col" class="border-0 text-uppercase font-medium">Full Name</th>
+		  <th scope="col" class="border-0 text-uppercase font-medium">Email</th>
+		  <th scope="col" class="border-0 text-uppercase font-medium">Phone</th>
+		  <th scope="col" class="border-0 text-uppercase font-medium">Added/Updated</th>
+		  <th scope="col" class="border-0 text-uppercase font-medium">Role</th>
+		  <th scope="col" class="border-0 text-uppercase font-medium ps-5">Manage</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		{% for user in usersList %}
+		<tr>
+		  <td class="pl-4">{{user.id}}</td>
+		  <td> 
+            <img src="{{ asset('uploads/usersPhotos/'~ user.photo) }}" alt="user"  id="img2">
+          </td>
+		  <td>
+			  <h5  class="font-medium mb-0">{{user.firstname}} {{user.lastname}}</h5>
+		  </td>
+		  <td>
+			  <span class="text-muted">{{user.email}}</span><br>
+		  </td>
+		  <td>{{user.phoneNumber}}</span>
+		  </td>
+		  <td>
+			  <span class="text-muted">{{user.updatedAt|date()}}</span><br>
+			  <span class="text-muted"></span>
+		  </td>
+		  <td>
+			{% if user.Roles|length > 0 %}
+			<select class="form-control category-select" id="exampleFormControlSelect1">
+		   
+			{% for role in user.Roles %}
+
+					<option class="px-2">{{role}}</option>
+				
+				{% endfor %}
+				
+			
+			</select>
+			{% else %}
+			<div class="px-4 mx-2">Role_USER</div>
+			
+		{% endif %}
+		  </td>
+		  <td>
+			<a href="{{path('app_userDetails',{'id' : user.id})}}" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle me-2"><i class="fa-regular fa-eye"></i></i> </button>
+			<a href="{{path('app.deleteUser',{'id' : user.id})}}"  type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle me-2"><i class="fa fa-trash"></i> </a>
+			<a  hx-target="#EditUser" hx-post="{{path('user.edit',{'id' : user.id})}}" hx-swap="outerHTML" data-bs-toggle="modal" data-bs-target="#EditUserModal" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle me-2"><i class="fa fa-edit"></i> </a>
+		  </td>
+		</tr>
+		{% endfor %}
+	  </tbody>
+	</table>
+</div>
+</div>
+</div>
+		<div id='AddUserModal' class='modal fade' role='dialog'>
+			<div class='modal-dialog'>
+				<div class='modal-content'>
+					<div class='modal-header'>
+						<h5 class='modal-title text-info'>Add New User
+						</h5>
+						<button class='btn-close' data-bs-dismiss='modal'></button>
+					</div>
+					<div class='modal-body px-2'>
+
+					<div  id="AddUser" style="height:420px; display: flex;
+					justify-content: center;
+					align-items: center;">
+					
+					<div class="loader-container">
+				  <div class="spinner"></div>
+				</div>
+					</div>  
+					
+
+			</div>
+
+		</div>
+
+
+	</div>
+</div>
+
+
+<div id='EditUserModal' class='modal fade' role='dialog'>
+<div class='modal-dialog'>
+	<div class='modal-content'>
+		<div class='modal-header'>
+			<h5 class='modal-title text-info'>Edit User
+			</h5>
+			<button class='btn-close' data-bs-dismiss='modal'></button>
+		</div>
+		<div class='modal-body px-2'>
+
+		<div  id="EditUser" style="height:420px; display: flex;
+		justify-content: center;
+		align-items: center;">
+		
+		<div class="loader-container">
+				  <div class="spinner"></div>
+				</div>
+					</div>  
+					
+
+			</div>
+
+		</div>
+
+
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+{% endblock  %}
+
+{% block sd %}
+
+<div class="sidebar-body">
+<ul class="sidebar-body-menu">
+  <li>
+	<a class="" href="{{ path('app.home') }}">
+	  <span class="icon home" aria-hidden="true"></span>
+	  Dashboard
+	</a>
+  </li>
+  <li>
+	<a class="show-cat-btn " href="##">
+	  <span class="icon folder" aria-hidden="true"></span>
+	  Folders
+											  
+	  <span class="category__btn transparent-btn" title="Open list">
+		<span class="sr-only">
+		  Open list
+		</span>
+		<span class="icon arrow-down" aria-hidden="true"></span>
+	  </span>
+	</a>
+	<ul class="cat-sub-menu">
+	  <li>
+		<a href="{{ path('folder.treeView') }}">
+		  <i class="fa fa-folder-open me-3" aria-hidden="true"></i>
+		  Folders
+		</a>
+		<a href="{{ path('trash.list') }}">
+		  <i class="fa fa-trash me-3" aria-hidden="true"></i>
+		  My trash
+		</a>
+	  </li>
+	</ul>
+  </li>
+  <li>
+	{% if is_granted('ROLE_upload') or is_granted('ROLE_classify') %}
+
+	  <a class="show-cat-btn" href="##">
+		<span class="icon " aria-hidden="true"> <i class="fa-solid fa-inbox" style="font-size: x-large;"></i></span>
+		Classify                    										
+		<span class="category__btn transparent-btn" title="Open list">
+		  <span class="sr-only">
+			Open list
+		  </span>
+		  <span class="icon arrow-down" aria-hidden="true"></span>
+		</span>
+	  </a>
+	  <ul class="cat-sub-menu">
+		<li>
+		{% if is_granted('ROLE_classify') %}
+		  <a href="{{ path('app_classify') }}">
+			<i class="fa-solid fa-box-open me-1" aria-hidden="true"></i>
+			CLassify Docs
+		  </a>
+		{% endif %}
+		{% if is_granted('ROLE_upload') %}
+		  <a href="{{ path('app_upload') }}">
+		  <i class="fa-solid fa-cloud-arrow-up me-1"aria-hidden="true"></i>
+		   Upload Docs
+		  </a>
+		{% endif %}
+		</li>
+	  </ul>
+	{% endif %}
+	</li>
+
+
+	<li>
+	{% if is_granted('ROLE_manage_users') or is_granted('ROLE_create_groups') %}
+	  <a class="show-cat-btn" href="##">
+		<span class="icon setting active" aria-hidden="true"></span>
+		Settings
+												
+		<span class="category__btn transparent-btn" title="Open list">
+		  <span class="sr-only">
+			Open list
+		  </span>
+		  <span class="icon arrow-down" aria-hidden="true"></span>
+		</span>
+	  </a>
+	  <ul class="cat-sub-menu">
+		<li>
+		  {% if is_granted('ROLE_manage_users') %}
+			<a href="{{ path('app_usersList') }}">
+			  <i class="fa-solid fa-user me-4" aria-hidden="true"></i>
+			  </i> Users
+			 </a>
+		  {% endif %}
+		  {% if is_granted('ROLE_manage_groups') %}
+			<a href="{{ path('app_groupList') }}">
+			  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+			  All groups
+			</a>
+		  {% endif %}
+		  {% if is_granted('ROLE_create_groups') %}
+			<a href="{{ path('app_groupMyList') }}">
+			  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+			  My groups
+			</a>
+		  {% endif %}
+		 </li>
+		</ul>
+	{% endif %}
+	</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+{% endblock %}

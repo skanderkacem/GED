@@ -1,0 +1,175 @@
+
+
+
+
+
+
+
+		{% extends "home/template.html.twig" %}
+
+{% block title %}
+	Doc | Search
+{% endblock %}
+
+{% block sd %}
+
+<div class="sidebar-body">
+<ul class="sidebar-body-menu">
+  <li>
+	<a class="" href="{{ path('app.home') }}">
+	  <span class="icon home" aria-hidden="true"></span>
+	  Dashboard
+	</a>
+  </li>
+  <li>
+	<a class="show-cat-btn active" href="##">
+	  <span class="icon folder" aria-hidden="true"></span>
+	  Folders
+											  
+	  <span class="category__btn transparent-btn" title="Open list">
+		<span class="sr-only">
+		  Open list
+		</span>
+		<span class="icon arrow-down" aria-hidden="true"></span>
+	  </span>
+	</a>
+	<ul class="cat-sub-menu">
+	  <li>
+		<a href="{{ path('folder.treeView') }}" >
+		  <i class="fa fa-folder-open me-3" aria-hidden="true"></i>
+		  Folders
+		</a>
+		<a href="{{ path('trash.list') }}">
+		  <i class="fa fa-trash me-3" aria-hidden="true"></i>
+		  My trash
+		</a>
+	  </li>
+	</ul>
+  </li>
+  <li>
+	{% if is_granted('ROLE_upload') or is_granted('ROLE_classify') %}
+
+	  <a class="show-cat-btn" href="##">
+		<span class="icon " aria-hidden="true"> <i class="fa-solid fa-inbox" style="font-size: x-large;"></i></span>
+		Classify                    										
+		<span class="category__btn transparent-btn" title="Open list">
+		  <span class="sr-only">
+			Open list
+		  </span>
+		  <span class="icon arrow-down" aria-hidden="true"></span>
+		</span>
+	  </a>
+	  <ul class="cat-sub-menu">
+		<li>
+		{% if is_granted('ROLE_classify') %}
+		  <a href="{{ path('app_classify') }}">
+			<i class="fa-solid fa-box-open me-1" aria-hidden="true"></i>
+			CLassify Docs
+		  </a>
+		{% endif %}
+		{% if is_granted('ROLE_upload') %}
+		  <a href="{{ path('app_upload') }}">
+		  <i class="fa-solid fa-cloud-arrow-up me-1"aria-hidden="true"></i>
+		   Upload Docs
+		  </a>
+		{% endif %}
+		</li>
+	  </ul>
+	{% endif %}
+	</li>
+
+
+	<li>
+	{% if is_granted('ROLE_manage_users') or is_granted('ROLE_create_groups') %}
+	  <a class="show-cat-btn" href="##">
+		<span class="icon setting" aria-hidden="true"></span>
+		Settings
+												
+		<span class="category__btn transparent-btn" title="Open list">
+		  <span class="sr-only">
+			Open list
+		  </span>
+		  <span class="icon arrow-down" aria-hidden="true"></span>
+		</span>
+	  </a>
+	  <ul class="cat-sub-menu">
+		<li>
+		  {% if is_granted('ROLE_manage_users') %}
+			<a href="{{ path('app_usersList') }}">
+			  <i class="fa-solid fa-user me-4" aria-hidden="true"></i>
+			  </i> Users
+			 </a>
+		  {% endif %}
+		  {% if is_granted('ROLE_manage_groups') %}
+			<a href="{{ path('app_groupList') }}">
+			  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+			  All groups
+			</a>
+		  {% endif %}
+		  {% if is_granted('ROLE_create_groups') %}
+			<a href="{{ path('app_groupMyList') }}">
+			  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+			  My groups
+			</a>
+		  {% endif %}
+		 </li>
+		</ul>
+	{% endif %}
+	</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+{% endblock %}
+
+{% block body %}
+
+		<div class=" row col-12 ms-1 ps-1 pe-3 " id="folder-content">
+
+			<div class="col-12 pt-1 bg-white ">
+				<div class="row1" style="right:display:flex;align-items:center;height:50px;">
+					<h3 class="px-2 my-2 ms-5 heads  ">
+						Search Results
+					</h3>
+				
+
+
+				</div>
+
+				<div class='row  px-2 mx-1 row2'>
+				{% if results|length > 0  %}
+				{% for document in results %}
+					{% if document.IsDeleted == false and ( app.user.hasAccessonFolder(document.folder)=='read' or app.user.hasAccessonFolder(document.folder)=='whrite' or app.user.hasAccessonFolder(document.folder)=='creator' or (is_granted('ROLE_manage_folders'))) %}
+						<div class='col-2 ' id='{{document.id}}'>
+				
+							<a href="{{path('doc.display',{'id':document.id,'vs':document.currentVersion}) }}" >
+								<img src="https://img.icons8.com/color/100/000000/document.png" width="40"/>
+				
+								<h6 class="document-name" style="text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">{{ document.name }}</h6>
+							</a>
+						</div>
+					{% endif %}
+				{% endfor %}
+				{% else %}
+				<div id="" class="alert alert-warning col-12"style="height:50px">
+					no document funded please check your search input carfully 
+				</div>
+				{% endif %}
+				</div>
+			</div>
+		</div>
+
+		<div hx-get="/showcomments/1"
+		hx-trigger="load delay:1s"
+		hx-swap="outerHTML"
+	>
+	</div>
+	
+
+{% endblock  %}
+{% block javascript %}
+	<script></script>
+{% endblock %}

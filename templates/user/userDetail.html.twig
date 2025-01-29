@@ -1,0 +1,268 @@
+{% extends 'home/template.html.twig' %}
+
+
+{% block title %}
+	UESER| Profil
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="main-body">
+
+
+			<div class="row gutters-sm">
+				<div class="col-md-4 mb-3">
+					<div class="card">
+						<div class="card-body">
+							<div class="d-flex flex-column align-items-center text-center">
+									<div id="Userphoto">
+								<img src="{{ asset('uploads/usersPhotos/'~ user.photo) }}"  alt="Admin" class="rounded" width="150">
+								</div>
+								<div class="mt-3">
+									<h4>{{user.firstname }}
+										{{user.lastname }}</h4>
+									{% if is_granted('ROLE_manage_users') %}
+										<a href="{{path('app.deleteUser',{'id' : user.id})}}" class="btn btn-danger mt-3" >
+											<i class=" fa-solid fa-trash-can mx-1 "></i>delete</a>
+										
+                  	{% endif %}
+					  {% if is_granted('ROLE_manage_users') or app.user == user %}
+										<a hx-target="#EditUser" hx-post="{{path('user.edit',{'id' : user.id})}}" hx-swap="outerHTML" data-bs-toggle="modal" data-bs-target="#EditUserModal" class="btn btn-secondary mt-3">
+                 					 <i class="fa-solid fa-user-pen mx-1"></i>Edit</a>
+									
+						{% endif %}
+
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="col-md-8">
+					<div class="card mb-3">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-sm-3">
+									<h6 class="mb-0">Full Name</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									{{user.firstname }}
+									{{user.lastname }}
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<h6 class="mb-0">Email</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									{{user.email }}
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<h6 class="mb-0">Phone</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									{{user.phoneNumber }}
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<h6 class="mb-0">created at
+									</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									{{user.createdAt|date('H:i Y:m:d') }}
+								</div>
+							</div>
+
+
+						</div>
+					</div>
+
+
+					<div class="card mb-3">
+						<div class="card-body">
+							<div class="row">
+								<h5 class="">Permissions
+								</h5>
+							</div>
+							<br>
+								{% if user.roles|length > 0   %}
+									
+								
+							{% for role in user.roles %}
+									<div class="row ms-5">
+										<div class="col-sm-9 text-secondary">
+											{{ role }}
+										</div>
+									</div>
+									<hr>
+								
+							{% endfor %}
+							{% else %}
+							<div class="row ms-5">
+										<div class="col-sm-9 text-secondary">
+											ROLE_USER
+										</div>
+									</div>
+						{% endif %}
+
+
+						</div>
+					</div>
+
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<div id='EditUserModal' class='modal fade' role='dialog'>
+		<div class='modal-dialog'>
+			<div class='modal-content'>
+				<div class='modal-header'>
+					<h5 class='modal-title text-info'>Edit User
+					</h5>
+					<button class='btn-close' data-bs-dismiss='modal'></button>
+				</div>
+				<div class='modal-body px-2'>
+		
+				<div  id="EditUser" style="height:420px; display: flex;
+				justify-content: center;
+				align-items: center;">
+				
+				<div class="loader-container">
+						  <div class="spinner"></div>
+						</div>
+							</div>  
+							
+		
+					</div>
+		
+				</div>
+		
+		
+			</div>
+		</div>
+		
+
+	{% endblock %}
+	{% block sd %}
+
+	<div class="sidebar-body">
+	<ul class="sidebar-body-menu">
+	  <li>
+		<a class="" href="{{ path('app.home') }}">
+		  <span class="icon home" aria-hidden="true"></span>
+		  Dashboard
+		</a>
+	  </li>
+	  <li>
+		<a class="show-cat-btn" href="##">
+		  <span class="icon folder" aria-hidden="true"></span>
+		  Folders
+												  
+		  <span class="category__btn transparent-btn" title="Open list">
+			<span class="sr-only">
+			  Open list
+			</span>
+			<span class="icon arrow-down" aria-hidden="true"></span>
+		  </span>
+		</a>
+		<ul class="cat-sub-menu">
+		  <li>
+			<a href="{{ path('folder.treeView') }}">
+			  <i class="fa fa-folder-open me-3" aria-hidden="true"></i>
+			  Folders
+			</a>
+			<a href="{{ path('trash.list') }}">
+			  <i class="fa fa-trash me-3" aria-hidden="true"></i>
+			  My trash
+			</a>
+		  </li>
+		</ul>
+	  </li>
+	  <li>
+		{% if is_granted('ROLE_upload') or is_granted('ROLE_classify') %}
+
+		  <a class="show-cat-btn" href="##">
+			<span class="icon " aria-hidden="true"> <i class="fa-solid fa-inbox" style="font-size: x-large;"></i></span>
+			Classify                    										
+			<span class="category__btn transparent-btn" title="Open list">
+			  <span class="sr-only">
+				Open list
+			  </span>
+			  <span class="icon arrow-down" aria-hidden="true"></span>
+			</span>
+		  </a>
+		  <ul class="cat-sub-menu">
+			<li>
+			{% if is_granted('ROLE_classify') %}
+			  <a href="{{ path('app_classify') }}">
+				<i class="fa-solid fa-box-open me-1" aria-hidden="true"></i>
+				CLassify Docs
+			  </a>
+			{% endif %}
+			{% if is_granted('ROLE_upload') %}
+			  <a href="{{ path('app_upload') }}">
+			  <i class="fa-solid fa-cloud-arrow-up me-1"aria-hidden="true"></i>
+			   Upload Docs
+			  </a>
+			{% endif %}
+			</li>
+		  </ul>
+		{% endif %}
+		</li>
+
+
+		<li>
+		{% if is_granted('ROLE_manage_users') or is_granted('ROLE_create_groups') %}
+		  <a class="show-cat-btn" href="##">
+			<span class="icon setting active" aria-hidden="true"></span>
+			Settings
+													
+			<span class="category__btn transparent-btn" title="Open list">
+			  <span class="sr-only">
+				Open list
+			  </span>
+			  <span class="icon arrow-down" aria-hidden="true"></span>
+			</span>
+		  </a>
+		  <ul class="cat-sub-menu">
+			<li>
+			  {% if is_granted('ROLE_manage_users') %}
+				<a href="{{ path('app_usersList') }}">
+				  <i class="fa-solid fa-user me-4" aria-hidden="true"></i>
+				  </i> Users
+				 </a>
+			  {% endif %}
+			  {% if is_granted('ROLE_manage_groups') %}
+				<a href="{{ path('app_groupList') }}">
+				  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+				  All groups
+				</a>
+			  {% endif %}
+			  {% if is_granted('ROLE_create_groups') %}
+				<a href="{{ path('app_groupMyList') }}">
+				  <i class="fa-solid fa-users me-3" aria-hidden="true"></i>
+				  My groups
+				</a>
+			  {% endif %}
+			 </li>
+			</ul>
+		{% endif %}
+		</li>
+	</ul>
+	</li>
+	</ul>
+	</div>
+	</div>
+	
+	
+	{% endblock %}

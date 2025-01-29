@@ -1,0 +1,37 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+
+        {{ form_start(form,{'attr':{'class':'col-12' ,'id':"editing"}}) }}
+   
+   {% if not (folder.name =='root') %}
+    <h5 class='text-primary mb-3'>Folder name :</h5>
+        {{ form_row(form.name,{'attr':{'class':'border mt-2'}}) }}
+   {% endif %}
+    
+    <h5 class='mt-5 text-primary mb-3'>AccessRight :</h5>
+        
+       
+            {% for row in form.accessRights %}
+            <div class='border border-primary p-2 mb-4 rounded container'>
+            {% if row.mode.vars.value == 2 %}
+               <label><strong>Read only access </strong> </label> 
+            {% else %}
+            <label for=''><strong>Write and Read access </strong> </label> 
+            {% endif %}
+            {{ form_row(row.mode,{'attr':{'class':'d-none'}}) }}
+            {{ form_row(row.users) }}
+            {{ form_row(row.groups) }}
+            </div>    
+        {% endfor %}
+                {{ form_row(form.submit,{'attr':{'class':'btn btn-primary mt-3 p-2 col-12','type':'submit'}}) }}
+        
+    {{ form_end(form) }}
+
+    <script defer>
+    $(document).ready(function(){
+      $('.select2').select2({dropdownParent: $('#Edit')});
+    
+    
+    });
+    </script>
+  

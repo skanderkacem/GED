@@ -1,0 +1,46 @@
+
+
+
+
+{% form_theme registrationForm 'bootstrap_5_layout.html.twig' %}
+
+{{ form_start(registrationForm,{'attr':{'class':'col-12'}}) }}
+<div class="overflow-scroll col-11 ps-3 " style="max-height:70vh;height:70vh ;">
+{{ form_row(registrationForm.firstName) }}
+<span class="text-danger ms-3" class='invalid' style="font-size: small;">
+        Please choose a firstname.
+</span>
+
+{{ form_row(registrationForm.lastName) }}
+
+<span class="text-danger ms-3" class='invalid' style="font-size: small;">
+        Please choose a lastname.
+</span>
+
+<div class=" offset-4 col-6">
+<img src="{{ asset('uploads/usersPhotos/avatar.png') }}" alt="" id="img">
+</div>
+{{ form_row(registrationForm.photo,{'attr':{'class':'border mt-2  mx-2','onchange' : 'loadphoto();'}}) }}
+
+{{ form_row(registrationForm.phoneNumber,{'attr':{'class':'border mt-2  mx-2'}}) }}
+    {{ form_row(registrationForm.email) }}
+    <span class="text-danger ms-3" class='invalid' style="font-size: small;">
+        Please choose an email.
+    </span>
+
+    {{ form_row(registrationForm.plainPassword,{'attr':{'required':false, 'class':'border mt-2 mx-2',
+
+    'placeholder':'the old  password will be kept',}}) }}
+    <br>
+
+{% if  is_granted('ROLE_manage_users')  %}
+    
+ <label>Permissions</label>
+    {{ form_row(registrationForm.Roles,{'attr':{'class':'border border-primary mt-2 p-3 ps-5 mx-2'}}) }}
+{% endif %}
+
+</div>
+<hr>
+    {{ form_row(registrationForm.submit,{'attr':{'class':'mt-2 mx-2 btn btn-primary col-11 ms-3 me-3 p-2'}}) }}
+        
+{{ form_end(registrationForm) }}
